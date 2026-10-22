@@ -189,7 +189,6 @@ document.getElementById('tb-fullscreen').addEventListener('click', () => {
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen?.();
 });
-document.getElementById('tb-info').addEventListener('click', () => window.mostraVista?.('info'));
 
 // Attribuzioni a comparsa
 const attribBtn = document.getElementById('attrib-btn');

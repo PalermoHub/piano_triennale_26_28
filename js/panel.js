@@ -35,7 +35,9 @@ function aggiornaNavMobile() {
 document.getElementById('mobile-nav').addEventListener('click', (e) => {
   const b = e.target.closest('.mn-btn');
   if (!b) return;
-  if (b.dataset.go === 'map') impostaPannello(false); else mostraVista(b.dataset.go);
+  if (b.dataset.go === 'map') impostaPannello(false);
+  else if (b.dataset.go === 'info') window.apriInfo?.();
+  else mostraVista(b.dataset.go);
 });
 document.addEventListener('filtri-cambiati', (e) => {
   const badge = document.getElementById('mn-badge');
