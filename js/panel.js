@@ -113,13 +113,26 @@ document.addEventListener('keydown', (e) => {
 
 // ── Elenco ───────────────────────────────────────────────────────────────────
 const ORDINAMENTI = {
-  importo: { label: 'Importo ↓', cmp: (a, b) => (b.importo || 0) - (a.importo || 0) || collator.compare(a.cod_int_amm, b.cod_int_amm) },
-  codice: { label: 'Codice', cmp: (a, b) => collator.compare(a.cod_int_amm, b.cod_int_amm) },
-  anno: { label: 'Anno di avvio', cmp: (a, b) => (a.annualita_avvio_affidamento - b.annualita_avvio_affidamento) || collator.compare(a.cod_int_amm, b.cod_int_amm) },
+  importo: { dir: -1, chiave: (o) => o.importo || 0 },
+  codice: { dir: 1, chiave: null },
+  anno: { dir: 1, chiave: (o) => o.annualita_avvio_affidamento },
 };
+let direzione = ORDINAMENTI[ordinamento].dir; // 1 crescente, -1 decrescente
 
+// A parità di valore il codice resta sempre in ordine crescente
 function elencoOrdinato() {
-  return [...ultimiRisultati].sort(ORDINAMENTI[ordinamento].cmp);
+  const { chiave } = ORDINAMENTI[ordinamento];
+  const cmp = chiave
+    ? (a, b) => (chiave(a) - chiave(b)) * direzione || collator.compare(a.cod_int_amm, b.cod_int_amm)
+    : (a, b) => collator.compare(a.cod_int_amm, b.cod_int_amm) * direzione;
+  return [...ultimiRisultati].sort(cmp);
+}
+
+function aggiornaBtnDirezione() {
+  const b = document.getElementById('el-dir');
+  b.textContent = direzione === 1 ? '↑' : '↓';
+  b.title = direzione === 1 ? 'Ordine crescente: clicca per decrescente' : 'Ordine decrescente: clicca per crescente';
+  b.setAttribute('aria-label', b.title);
 }
 
 let elencoDirty = true;
@@ -182,7 +195,20 @@ elLista.addEventListener('keydown', (e) => {
   righe[n].tabIndex = 0;
   righe[n].focus();
 });
-document.getElementById('el-ordina').addEventListener('change', (e) => { ordinamento = e.target.value; elencoDirty = true; renderElenco(); });
+document.getElementById('el-ordina').addEventListener('change', (e) => {
+  ordinamento = e.target.value;
+  direzione = ORDINAMENTI[ordinamento].dir;
+  aggiornaBtnDirezione();
+  elencoDirty = true;
+  renderElenco();
+});
+document.getElementById('el-dir').addEventListener('click', () => {
+  direzione = -direzione;
+  aggiornaBtnDirezione();
+  elencoDirty = true;
+  renderElenco();
+});
+aggiornaBtnDirezione();
 
 // ── Selezione ────────────────────────────────────────────────────────────────
 function selezionaIntervento(cod, { zoom = false, altri = [], apri = true } = {}) {
