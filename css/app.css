@@ -24,7 +24,7 @@
 
 /* Legenda a righe cliccabili (button) */
 #map-legends .map-legend { min-width: 250px; max-width: 290px; }
-.legend-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #5a6a98; white-space: nowrap; }
+.legend-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--ink-2); white-space: nowrap; }
 .legend-row + .legend-row { margin-top: 3px; }
 .legend-row .legend-dot { width: 11px; height: 11px; }
 button.legend-row { width: 100%; background: none; border: none; font-family: inherit; text-align: left; }
@@ -36,14 +36,14 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 /* ── Elenco ── */
 .el-toolbar {
   display: flex; align-items: center; gap: 8px; padding: 7px 16px;
-  border-bottom: 1px solid rgba(30, 60, 160, 0.1); font-size: 11px; color: #5a6a98; flex-shrink: 0;
+  border-bottom: 1px solid rgba(30, 60, 160, 0.1); font-size: 11px; color: var(--ink-2); flex-shrink: 0;
 }
 .el-toolbar select {
   font: inherit; font-size: 11px; padding: 3px 6px; border: 1px solid rgba(30, 60, 160, 0.2); border-radius: 6px; background: #fff;
 }
 .el-dir { font: inherit; font-size: 13px; font-weight: 700; line-height: 1; width: 26px; height: 24px; cursor: pointer; color: var(--c-brand-blue); background: #fff; border: 1px solid rgba(30, 60, 160, 0.2); border-radius: 6px; }
 .el-dir:hover { background: rgba(36, 88, 200, 0.08); }
-.el-hint { margin-left: auto; color: #a0acd0; font-size: 10px; }
+.el-hint { margin-left: auto; color: #a0acd0; font-size: 11px; }
 #el-lista { flex: 1; padding: 6px 8px 12px; }
 .el-row {
   display: flex; flex-direction: column; gap: 3px; width: 100%; text-align: left;
@@ -56,7 +56,7 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .el-top { display: flex; align-items: center; gap: 7px; font-size: 11px; }
 .el-cod { font-weight: 700; color: var(--c-brand-blue); font-variant-numeric: tabular-nums; }
 .el-tag {
-  font-size: 9px; font-weight: 700; letter-spacing: .03em; padding: 1px 6px; border-radius: 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: .03em; padding: 1px 6px; border-radius: 8px;
   background: rgba(107, 114, 128, 0.14); color: #4b5563;
 }
 .el-imp { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; color: #3a4a78; }
@@ -77,6 +77,10 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 }
 #rp-punto-back:hover { background: rgba(255, 153, 0, 0.12); }
 #rp-scheda .rp-punto-hdr { display: block; }
+/* Testata colorata come l'annualità di avvio (stessi colori di mappa e legenda, scuriti per il testo bianco) */
+#rp-scheda .rp-punto-hdr.hdr-a1 { background: linear-gradient(135deg, #b40000 0%, #7d0000 100%); }
+#rp-scheda .rp-punto-hdr.hdr-a2 { background: linear-gradient(135deg, #f09332 0%, #c9680f 100%); }
+#rp-scheda .rp-punto-hdr.hdr-a3 { background: linear-gradient(135deg, #a89a00 0%, #766c00 100%); }
 #rp-scheda .rp-punto-quota-box { text-align: left; margin-top: 8px; }
 #rp-scheda .rp-punto-quota-unit { display: inline; font-size: 11px; }
 #rp-scheda .rp-punto-sub { display: flex; align-items: center; gap: 5px; margin-top: 5px; opacity: .95; }
@@ -85,7 +89,7 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .rp-punto-row-label { flex: 0 0 42%; }
 .sc-avviso {
   font-size: 11px; line-height: 1.5; padding: 7px 10px; margin-bottom: 6px; border-radius: 6px;
-  background: rgba(36, 88, 200, 0.07); border-left: 3px solid var(--c-brand-blue); color: #2a3a68;
+  background: rgba(36, 88, 200, 0.07); border-left: 3px solid var(--c-brand-blue); color: var(--ink);
 }
 .sc-avviso.warn { background: rgba(224, 120, 0, 0.1); border-left-color: #e07800; }
 .sc-link {
@@ -96,7 +100,7 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 
 /* ── Statistiche / Info ── */
 #rp-stats-body h3, #rp-info h3 {
-  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8898c8; margin: 16px 0 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin: 16px 0 6px;
 }
 .stat-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 4px; }
 .srank-item.static { cursor: default; }
@@ -120,12 +124,12 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .popup-hover .maplibregl-popup-tip { display: none; }
 .ph-titolo { display: flex; align-items: center; gap: 7px; color: var(--c-brand-blue); font-size: 14px; }
 .ph-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(30, 60, 160, 0.25); }
-.ph-altri { font-size: 10px; font-weight: 700; background: rgba(255, 153, 0, 0.18); color: #a35c00; border-radius: 8px; padding: 0 6px; }
+.ph-altri { font-size: 11px; font-weight: 700; background: rgba(255, 153, 0, 0.18); color: #a35c00; border-radius: 8px; padding: 0 6px; }
 .ph-desc { margin-top: 5px; color: #3a4e78; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .ph-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .ph-chip { font-size: 10.5px; font-weight: 700; padding: 2px 9px; border-radius: 10px; background: rgba(36, 88, 200, 0.08); color: var(--c-brand-blue); border: 1px solid rgba(36, 88, 200, 0.25); }
 .ph-chip.imp { background: rgba(255, 153, 0, 0.14); color: #a35c00; border-color: rgba(255, 153, 0, 0.45); }
-.ph-hint { margin-top: 7px; font-size: 10px; color: #8a96b4; }
+.ph-hint { margin-top: 7px; font-size: 11px; color: #8a96b4; }
 [data-theme="dark"] .popup-hover .maplibregl-popup-content { background: #242426; border-color: rgba(255, 255, 255, 0.12); }
 [data-theme="dark"] .ph-titolo { color: #e4e4e8; }
 [data-theme="dark"] .ph-desc { color: #d4d4d8; }
@@ -144,7 +148,7 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 /* ── Badge e posizione nella scheda ── */
 .sc-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
 .sc-badge {
-  font-size: 10px; font-weight: 700; letter-spacing: .02em; padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: .02em; padding: 2px 8px; border-radius: 10px;
   background: rgba(255, 255, 255, 0.22); color: #fff; border: 1px solid rgba(255, 255, 255, 0.45);
 }
 .sc-badge.ok { background: #fff; color: #1b7a3d; border-color: #fff; }
@@ -176,7 +180,7 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .sc-card-body { margin-top: 10px; }
 .sc-card-body .rp-punto-row { font-size: 12px; padding: 4px 8px; margin-bottom: 0; border-radius: 6px; }
 .sc-card-body .rp-punto-row:nth-child(even), .sc-pos .rp-punto-row:nth-child(even) { background: rgba(30, 60, 160, 0.07); }
-.sc-card-body .rp-punto-row-label { color: #5a6a98; }
+.sc-card-body .rp-punto-row-label { color: var(--ink-2); }
 .sc-card-body .rp-punto-row-value { font-weight: 700; }
 .sc-card-body .sc-avviso:last-child { margin-bottom: 0; }
 [data-theme="dark"] .sc-card { background: rgba(36, 36, 38, 0.6); border-color: rgba(255, 255, 255, 0.125); }
@@ -222,3 +226,69 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 [data-theme="dark"] #pf-filter-btn { background: #ff9900; color: #fff; }
 [data-theme="dark"] .pfm-acc > summary::after { color: #ff9900; }
 [data-theme="dark"] .rp-punto-row-value a, [data-theme="dark"] .rp-punto-row-value a:visited { color: #ff9900; }
+
+/* Banner copertura: quanto del programma è sulla mappa */
+#cov-banner {
+  position: absolute; top: 12px; left: calc((100% - 406px) / 2); transform: translateX(-50%); z-index: var(--z-toolbar);
+  display: flex; gap: 0; align-items: stretch; max-width: calc(100% - 100px);
+  background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(30, 60, 160, 0.14); border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(20, 40, 100, 0.18); font-size: 12px; color: var(--ink); white-space: nowrap; overflow: hidden;
+}
+#cov-banner .cov-item { padding: 6px 12px; background: none; border: none; font: inherit; color: inherit; }
+#cov-banner .cov-fuori { cursor: pointer; border-left: 1px solid rgba(30, 60, 160, 0.14); }
+#cov-banner .cov-fuori:hover:not(:disabled) { background: rgba(36, 88, 200, 0.08); }
+#cov-banner .cov-fuori.active { background: var(--c-brand-blue); color: #fff; }
+[data-theme="dark"] #cov-banner { background: rgba(32, 32, 34, 0.94); color: #e4e4e8; border-color: rgba(255, 255, 255, 0.15); }
+[data-theme="dark"] #cov-banner .cov-fuori { border-left-color: rgba(255, 255, 255, 0.15); }
+@media (max-width: 640px) {
+  #cov-banner { left: 50%; top: 8px; font-size: 11px; max-width: calc(100% - 24px); }
+  #cov-banner .cov-item { padding: 5px 9px; }
+}
+
+/* Touch: il pinch basta, lo slider di zoom libera l'angolo in basso a destra */
+@media (pointer: coarse) {
+  #zoom-slider { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+.legend-nota { font-size: 10.5px; font-style: italic; color: var(--ink-3); }
+
+/* Elenco: intestazioni di gruppo e barra proporzionale all'importo */
+.el-gruppo { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; gap: 8px; padding: 5px 12px; font-size: 11px; font-weight: 700; color: var(--ink); background: #e9eefb; border-bottom: 1px solid var(--line); }
+.el-gruppo-tot { font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.el-barra { display: block; height: 3px; margin-top: 4px; border-radius: 2px; background: rgba(36, 88, 200, 0.08); overflow: hidden; }
+.el-barra > span { display: block; height: 100%; border-radius: 2px; opacity: .85; }
+[data-theme="dark"] .el-gruppo { background: #2a2a2e; }
+[data-theme="dark"] .el-barra { background: rgba(255, 255, 255, 0.08); }
+
+/* Statistiche: spesa per anno a barre impilate per settore */
+.spesa-chart { display: flex; flex-direction: column; gap: 6px; }
+.spesa-row { display: grid; grid-template-columns: 38px 1fr 70px; align-items: center; gap: 8px; font-size: 11px; }
+.spesa-track { display: block; height: 16px; border-radius: 4px; background: rgba(36, 88, 200, 0.06); overflow: hidden; }
+.spesa-stack { display: flex; height: 100%; }
+.spesa-seg { display: block; min-width: 1px; }
+.spesa-seg + .spesa-seg { border-left: 1px solid #fff; }
+.spesa-legenda { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: 11px; color: var(--ink-2); }
+.spesa-voce { display: inline-flex; align-items: center; gap: 5px; }
+[data-theme="dark"] .spesa-track { background: rgba(255, 255, 255, 0.07); }
+[data-theme="dark"] .spesa-seg + .spesa-seg { border-left-color: #1c1c1e; }
+
+/* Barra dell'elenco: due menu e il pulsante di direzione su una riga; la nota sulla tastiera è nella Guida */
+.el-toolbar { flex-wrap: wrap; row-gap: 6px; }
+.el-toolbar label { white-space: nowrap; }
+.el-hint { display: none; }
+
+/* Un solo carattere (Titillium Web) per tutta l'interfaccia, anche per controlli, popup, attribuzioni e codice */
+button, input, select, textarea, code, kbd, output, .maplibregl-map, .maplibregl-popup, .maplibregl-ctrl, .maplibregl-ctrl-attrib { font-family: 'Titillium Web', sans-serif; }
+
+/* Mobile: toolbar orizzontale sotto il banner (non copre più i punti); Info e schermo intero sono già altrove / superflui */
+@media (max-width: 640px) {
+  #map-toolbar-wrap { left: 50%; top: 46px; transform: translateX(-50%); }
+  #map-toolbar { flex-direction: row; border: 1px solid rgba(30, 60, 160, 0.14); border-radius: 14px; padding: 2px 4px; gap: 2px; box-shadow: 0 2px 10px rgba(30, 60, 160, 0.16); }
+  #map-toolbar .tb-sep, #tb-info, #tb-fullscreen { display: none; }
+}
+
+.stats-vista { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--ink); cursor: pointer; }
+.stats-vista input { accent-color: var(--c-brand-orange); width: 15px; height: 15px; }

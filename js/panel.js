@@ -16,6 +16,7 @@ function impostaPannello(aperto) {
   rpToggle.setAttribute('aria-expanded', String(aperto));
   rpWrap.inert = false;
   aggiornaNavMobile();
+  if (typeof renderCopertura === 'function' && DATI.interventi.length) setTimeout(() => { renderCopertura(); ricalcolaStatsVista(); }, 450); // dopo la transizione del pannello
 }
 window.openRightPanel = () => impostaPannello(true);
 rpToggle.addEventListener('click', () => impostaPannello(!rpWrap.classList.contains('open')));
@@ -121,13 +122,36 @@ const ORDINAMENTI = {
 };
 let direzione = ORDINAMENTI[ordinamento].dir; // 1 crescente, -1 decrescente
 
+// Raggruppamento facoltativo dell'elenco: etichetta del gruppo e ordine dei gruppi
+let raggruppamento = '';
+const GRUPPI = {
+  anno: { etichetta: (o) => ANNO_LABEL[o.annualita_avvio_affidamento] || 'Annualità n.d.', ordine: (a, b) => collator.compare(a.etichetta, b.etichetta) },
+  circ: { etichetta: (o) => (o.geo[0]?.[0] ? `Circoscrizione ${o.geo[0][0]}` : 'Non localizzato'), ordine: (a, b) => (a.etichetta.startsWith('Non') - b.etichetta.startsWith('Non')) || ordineRomano(a.etichetta.split(' ')[1], b.etichetta.split(' ')[1]) },
+  settore: { etichetta: (o) => o._settore, ordine: (a, b) => b.importo - a.importo || collator.compare(a.etichetta, b.etichetta) },
+};
+// Rango di ogni gruppo nella lista data (i gruppi si ordinano a parte dagli interventi)
+function rangoGruppi(lista) {
+  const g = GRUPPI[raggruppamento];
+  const tot = new Map();
+  for (const o of lista) {
+    const e = g.etichetta(o);
+    const t = tot.get(e) || { etichetta: e, importo: 0 };
+    t.importo += o.importo || 0;
+    tot.set(e, t);
+  }
+  return new Map([...tot.values()].sort(g.ordine).map((t, i) => [t.etichetta, i]));
+}
+
 // A parità di valore il codice resta sempre in ordine crescente
 function elencoOrdinato() {
   const { chiave } = ORDINAMENTI[ordinamento];
   const cmp = chiave
     ? (a, b) => (chiave(a) - chiave(b)) * direzione || collator.compare(a.cod_int_amm, b.cod_int_amm)
     : (a, b) => collator.compare(a.cod_int_amm, b.cod_int_amm) * direzione;
-  return [...ultimiRisultati].sort(cmp);
+  if (!raggruppamento) return [...ultimiRisultati].sort(cmp);
+  const rango = rangoGruppi(ultimiRisultati);
+  const g = GRUPPI[raggruppamento];
+  return [...ultimiRisultati].sort((a, b) => rango.get(g.etichetta(a)) - rango.get(g.etichetta(b)) || cmp(a, b));
 }
 
 function aggiornaBtnDirezione() {
@@ -146,7 +170,17 @@ function renderElenco() {
   const imp = dati.reduce((s, o) => s + (o.importo || 0), 0);
   document.getElementById('el-conto').textContent = `${fmtNum.format(dati.length)} interventi · ${fmtEuroCompatto(imp)}`;
   const frag = document.createDocumentFragment();
+  const maxImp = Math.max(1, ...dati.map((o) => o.importo || 0));
+  let gruppoCorrente = null;
   for (const o of dati) {
+    if (raggruppamento) {
+      const g = GRUPPI[raggruppamento].etichetta(o);
+      if (g !== gruppoCorrente) {
+        gruppoCorrente = g;
+        const nel = dati.filter((x) => GRUPPI[raggruppamento].etichetta(x) === g);
+        frag.append(el('div', { class: 'el-gruppo', role: 'presentation' }, [el('span', { text: g }), el('span', { class: 'el-gruppo-tot', text: `${fmtNum.format(nel.length)} · ${fmtEuroCompatto(nel.reduce((s, x) => s + (x.importo || 0), 0))}` })]));
+      }
+    }
     const col = COLORI_CLASSE[ANNO_CLASSE[o.annualita_avvio_affidamento]];
     const sel = o.cod_int_amm === codiceSelezionato;
     frag.append(el('button', {
@@ -159,7 +193,8 @@ function renderElenco() {
         o.pos ? null : el('span', { class: 'el-tag', text: 'non localizzato' }),
         el('span', { class: 'el-imp', text: fmtEuroCompatto(o.importo) }),
       ]),
-      el('span', { class: 'el-desc', text: o.descrizione_intervento || '' }),
+      el('span', { class: 'el-desc', text: o._titolo }),
+      el('span', { class: 'el-barra', 'aria-hidden': 'true' }, el('span', { style: `width:${Math.max(1.5, ((o.importo || 0) / maxImp) * 100)}%;background:${col}` })),
     ]));
   }
   if (!dati.length) frag.append(el('div', { class: 'pf-dd-empty', text: 'Nessun intervento corrisponde ai filtri.' }));
@@ -201,6 +236,11 @@ document.getElementById('el-ordina').addEventListener('change', (e) => {
   ordinamento = e.target.value;
   direzione = ORDINAMENTI[ordinamento].dir;
   aggiornaBtnDirezione();
+  elencoDirty = true;
+  renderElenco();
+});
+document.getElementById('el-raggruppa').addEventListener('change', (e) => {
+  raggruppamento = e.target.value;
   elencoDirty = true;
   renderElenco();
 });
@@ -284,7 +324,8 @@ const riga = (label, valore) => (valore == null || valore === '' ? null : el('di
   el('span', { class: 'rp-punto-row-label', text: label }),
   el('span', { class: 'rp-punto-row-value', text: String(valore) }),
 ]));
-const eur = (v) => (v == null ? null : fmtEuro2.format(v));
+// Euro interi se non ci sono centesimi (niente «,00 €» a ogni riga)
+const eur = (v) => (v == null ? null : Math.abs(v % 1) < 0.005 ? fmtEuro.format(v) : fmtEuro2.format(v));
 const badge = (testo, tipo = '') => el('span', { class: `sc-badge ${tipo}`, text: testo });
 const avviso = (testo, tipo = '') => el('div', { class: `sc-avviso ${tipo}`, text: testo });
 
@@ -310,8 +351,8 @@ function aggiornaScheda() {
 
   const col = COLORI_CLASSE[ANNO_CLASSE[o.annualita_avvio_affidamento]];
   const parti = [];
-  parti.push(el('div', { class: 'rp-punto-hdr' }, [
-    el('div', { class: 'rp-punto-place', text: o.descrizione_intervento }),
+  parti.push(el('div', { class: `rp-punto-hdr hdr-a${ANNO_CLASSE[o.annualita_avvio_affidamento] || 0}` }, [
+    el('div', { class: 'rp-punto-place', text: o._titolo }),
     el('div', { class: 'rp-punto-sub' }, [el('span', { class: 'legend-dot', style: `background:${col}` }), ` ${ANNO_LABEL[o.annualita_avvio_affidamento] || ''} · ${o._settore}`]),
     el('div', { class: 'rp-punto-quota-box' }, [el('span', { class: 'rp-punto-quota-val', text: fmtEuroCompatto(o.importo) }), el('span', { class: 'rp-punto-quota-unit', text: ' nel triennio' })]),
     el('div', { class: 'sc-badges' }, [
@@ -345,7 +386,7 @@ function aggiornaScheda() {
 
   parti.push(sez('Importi', { badge: fmtEuroCompatto(o.importo) },
     riga('1° anno (2026)', eur(o.costo_1_anno)), riga('2° anno (2027)', eur(o.costo_2_anno)), riga('3° anno (2028)', eur(o.costo_3_anno)),
-    riga('Annualità successive', eur(o.costi_annualita_successive)), riga('Triennio', eur(o.importo_triennio)), riga('Importo complessivo', eur(o.importo_complessivo))));
+    riga('Annualità successive', o.costi_annualita_successive ? eur(o.costi_annualita_successive) : null), riga('Triennio', eur(o.importo_triennio)), riga('Importo complessivo', eur(o.importo_complessivo))));
 
   const link = o.opencup_link ? el('a', { href: o.opencup_link, target: '_blank', rel: 'noopener noreferrer', text: `${o.cup} ↗` }) : null;
   parti.push(sez('Scheda D', { badge: o.cup_presente ? 'CUP presente' : null },
@@ -382,13 +423,19 @@ document.getElementById('rp-punto-body').addEventListener('click', (e) => {
   if (b) selezionaIntervento(b.dataset.cod, { zoom: true });
 });
 
+const COLORI_SETTORI = ['#2458c8', '#e0a000', '#1b7a3d', '#8e44ad', '#c0392b', '#8a8a92'];
+
 // ── Statistiche ──────────────────────────────────────────────────────────────
 function cartaStat(valore, etichetta) {
   return el('div', { class: 'stat-card' }, [el('div', { class: 'stat-card-value', text: valore }), el('div', { class: 'stat-card-label', text: etichetta })]);
 }
 
+// Statistiche: per default solo gli interventi nell'area visibile della mappa (si aggiornano con zoom e spostamenti)
+let statsSoloVista = true;
+let filtroStats = null;
+
 function classifica(dim, chiave) {
-  const agg = aggrega(dim);
+  const agg = aggrega(dim, filtroStats);
   const attivoVal = (v) => (GEO_DIMS.includes(dim) ? st[dim] === v : st[dim]?.has(v));
   const haSel = GEO_DIMS.includes(dim) ? !!st[dim] : st[dim]?.size > 0;
   const aperto = espansi.has(`stats-${dim}`);
@@ -412,7 +459,9 @@ function classifica(dim, chiave) {
 
 function renderStats() {
   const box = document.getElementById('rp-stats-body');
-  const r = ultimiRisultati;
+  const vista = statsSoloVista ? boundsVisibili() : null;
+  filtroStats = vista ? (o) => o.pos && vista.contains(o.pos) : null;
+  const r = filtroStats ? ultimiRisultati.filter(filtroStats) : ultimiRisultati;
   const tot = r.reduce((s, o) => s + (o.importo || 0), 0);
   const senzaCup = r.filter((o) => !o.cup_presente).length;
   const anni = [1, 2, 3].map((k) => r.reduce((s, o) => s + (o[`costo_${k}_anno`] || 0), 0));
@@ -423,22 +472,41 @@ function renderStats() {
     cartaStat(r.length ? fmtEuroCompatto(tot / r.length) : '–', 'Importo medio'),
     cartaStat(fmtNum.format(senzaCup), 'Senza CUP'),
   ]);
-  const spesa = el('div', { class: 'srank-list' });
-  ['2026', '2027', '2028'].forEach((a, i) => spesa.append(el('div', { class: 'srank-item static' }, [
-    el('span', { class: 'srank-label', text: `Spesa ${a}` }),
-    el('span', { class: 'srank-bar-track' }, el('span', { class: 'srank-bar-fill srank-bar-fill--costo', style: `width:${(anni[i] / maxAnno) * 100}%` })),
-    el('span', { class: 'srank-value', text: fmtEuroCompatto(anni[i]) }),
-  ])));
+  // Spesa per anno: barre impilate per settore (i 5 settori con più spesa, gli altri raggruppati)
+  const perSettore = new Map();
+  for (const o of r) perSettore.set(o._settore, (perSettore.get(o._settore) || 0) + [1, 2, 3].reduce((s, k) => s + (o[`costo_${k}_anno`] || 0), 0));
+  const top = [...perSettore].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([s]) => s);
+  const settori = [...top, 'Altri settori'];
+  const quota = (k, s) => r.reduce((t, o) => t + ((s === 'Altri settori' ? !top.includes(o._settore) : o._settore === s) ? (o[`costo_${k}_anno`] || 0) : 0), 0);
+  const spesa = el('div', { class: 'spesa-chart' });
+  ['2026', '2027', '2028'].forEach((a, i) => {
+    const seg = settori.map((s, j) => ({ s, j, v: quota(i + 1, s) })).filter((x) => x.v > 0);
+    spesa.append(el('div', { class: 'spesa-row' }, [
+      el('span', { class: 'srank-label', text: a }),
+      el('span', { class: 'spesa-track', role: 'img', 'aria-label': `Spesa ${a}: ${fmtEuroCompatto(anni[i])}` }, el('span', { class: 'spesa-stack', style: `width:${(anni[i] / maxAnno) * 100}%` },
+        seg.map((x) => el('span', { class: 'spesa-seg', style: `flex:${x.v};background:${COLORI_SETTORI[x.j]}`, title: `${x.s}: ${fmtEuroCompatto(x.v)}` })))),
+      el('span', { class: 'srank-value', text: fmtEuroCompatto(anni[i]) }),
+    ]));
+  });
+  spesa.append(el('div', { class: 'spesa-legenda' }, settori.map((s, j) => el('span', { class: 'spesa-voce' }, [el('span', { class: 'legend-dot', style: `background:${COLORI_SETTORI[j]}` }), s]))));
   const colonne = (titolo, dim) => [el('h3', { text: titolo }), el('div', { class: 'srank-cols' }, [
     el('div', { class: 'srank-col' }, [el('div', { class: 'srank-col-title', text: 'Per numero' }), classifica(dim, 'n')]),
     el('div', { class: 'srank-col' }, [el('div', { class: 'srank-col-title', text: 'Per importo' }), classifica(dim, 'costo')]),
   ])];
   box.replaceChildren(
+    el('label', { class: 'stats-vista' }, [el('input', { type: 'checkbox', id: 'stats-solo-vista', checked: statsSoloVista }), el('span', { text: statsSoloVista ? 'Solo area visibile della mappa (esclusi i non localizzati)' : 'Tutta la città (inclusi i non localizzati)' })]),
     el('p', { class: 'panel-note', text: 'Numeri e importi del sottoinsieme filtrato. Clicca una voce per filtrare: i filtri sono interconnessi e a scalare, clicca di nuovo per rimuoverlo.' }),
     cards, el('h3', { text: 'Spesa per anno' }), spesa,
     ...colonne('Circoscrizioni', 'circ'), ...colonne('Quartieri', 'quart'), ...colonne('Settori', 'settore'), ...colonne('Fonti di finanziamento', 'fonte'),
   );
 }
+document.getElementById('rp-stats-body').addEventListener('change', (e) => {
+  if (e.target.id === 'stats-solo-vista') { statsSoloVista = e.target.checked; renderStats(); }
+});
+// Le statistiche seguono la mappa: dopo ogni spostamento o zoom si ricalcolano (con un piccolo ritardo)
+let timerStatsVista;
+const ricalcolaStatsVista = () => { clearTimeout(timerStatsVista); timerStatsVista = setTimeout(() => { if (vistaCorrente === 'stats' && statsSoloVista) renderStats(); }, 150); };
+map.on('moveend', ricalcolaStatsVista);
 document.getElementById('rp-stats-body').addEventListener('click', (e) => {
   const m = e.target.closest('.pf-more[data-more-stats]');
   if (m) { const k = `stats-${m.dataset.moreStats}`; if (!espansi.delete(k)) espansi.add(k); renderStats(); return; }
@@ -446,13 +514,30 @@ document.getElementById('rp-stats-body').addEventListener('click', (e) => {
   if (b) toggleFiltro(b.dataset.dim, b.dataset.val);
 });
 
+// Tabella dati: js/tabella.js si scarica al primo clic (poi si apre da sé); dopo, il pulsante apre/chiude il cassetto
+document.getElementById('tb-tabella').addEventListener('click', () => {
+  if (typeof tabApri === 'function') { tabApri(); return; }
+  const s = el('script', { src: 'js/tabella.js' });
+  s.onerror = () => alert('Impossibile caricare la tabella. Riprova.');
+  document.body.append(s);
+});
+
 // ── Avvio ────────────────────────────────────────────────────────────────────
 async function avvia() {
-  await caricaDati();
+  const lista = document.getElementById('el-lista');
+  lista.replaceChildren(el('div', { class: 'pf-dd-empty', role: 'status', text: 'Caricamento degli interventi…' }));
+  try {
+    await caricaDati();
+  } catch (err) {
+    console.error(err);
+    lista.replaceChildren(el('div', { class: 'pf-dd-empty', role: 'alert', text: 'Impossibile caricare i dati degli interventi. Controlla la connessione e ricarica la pagina.' }));
+    return;
+  }
   leggiUrl();
   initFiltriUI();
   const prontoMappa = map.getLayer('punti') ? Promise.resolve() : new Promise((r) => map.once('interventi-pronti', r));
   await prontoMappa;
+  aggiornaRaggiPunti();
   aggiornaScheda();
   aggiorna({ salvaUrl: false });
   const cod = new URLSearchParams(location.hash.slice(1)).get('i');

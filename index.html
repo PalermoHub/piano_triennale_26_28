@@ -468,6 +468,9 @@
   Interventi
 </button>
 
+<!-- ═══ COPERTURA: sulla mappa / fuori mappa ═══ -->
+<div id="cov-banner" role="status" aria-live="polite"></div>
+
 <!-- ═══ LEGENDA ═══ -->
 <div id="map-legends">
   <div class="map-legend visible" id="legend-annualita">
@@ -542,6 +545,13 @@
           <option value="anno">Anno di avvio</option>
         </select>
         <button type="button" id="el-dir" class="el-dir"></button>
+        <label for="el-raggruppa">Raggruppa</label>
+        <select id="el-raggruppa">
+          <option value="">Nessuno</option>
+          <option value="anno">Annualità</option>
+          <option value="circ">Circoscrizione</option>
+          <option value="settore">Settore</option>
+        </select>
         <span class="el-hint">↑ ↓ scorrono · Invio apre</span>
       </div>
       <div id="el-lista" class="rp-scroll" role="listbox" aria-label="Elenco interventi"></div>
@@ -590,6 +600,7 @@
           <div class="pfm-field"><label for="pf-quart-input">Quartiere</label><div class="pf-combo"><input type="text" id="pf-quart-input" class="pf-combo-input" placeholder="Tutti · scrivi per cercare…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="pf-quart-list"><div class="pf-combo-list" id="pf-quart-list" role="listbox"></div></div></div>
           <div class="pfm-field"><label for="pf-upl-input">UPL · Unità di Primo Livello</label><div class="pf-combo"><input type="text" id="pf-upl-input" class="pf-combo-input" placeholder="Tutte · scrivi per cercare…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="pf-upl-list"><div class="pf-combo-list" id="pf-upl-list" role="listbox"></div></div></div>
         </div>
+        <details class="pfm-group pfm-acc" data-dim="pos"><summary><span id="lb-pos">Localizzazione</span><span class="pfm-sel" id="pf-sel-pos"></span></summary><div class="pfm-chipset" id="pf-set-pos" role="group" aria-labelledby="lb-pos"></div></details>
         <div class="pfm-section">Che cosa</div>
         <details class="pfm-group pfm-acc" data-dim="anno" open><summary><span id="lb-anno">Annualità (avvio affidamento)</span><span class="pfm-sel" id="pf-sel-anno"></span></summary><div class="pfm-chipset" id="pf-set-anno" role="group" aria-labelledby="lb-anno"></div></details>
         <details class="pfm-group pfm-acc" data-dim="settore" open><summary><span id="lb-settore">Settore</span><span class="pfm-sel" id="pf-sel-settore"></span></summary><div class="pfm-chipset" id="pf-set-settore" role="group" aria-labelledby="lb-settore"></div></details>
@@ -668,7 +679,6 @@
 <script src="js/map.js"></script>
 <script src="js/filters.js"></script>
 <script src="js/panel.js"></script>
-<script src="js/tabella.js"></script>
 <script src="js/info.js"></script>
 </body>
 </html>

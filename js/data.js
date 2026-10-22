@@ -14,14 +14,34 @@ async function caricaDati() {
   DATI.chiavi = chiavi;
   DATI.perCodice = new Map(interventi.map((o) => [o.cod_int_amm, o]));
   for (const o of interventi) {
-    o._cerca = `${o.cod_int_amm} ${o.descrizione_intervento || ''} ${o.rup || ''} ${o.cup || ''}`.toLowerCase();
-    o._tipologia = (o.tipologia || '').replace(/^\d+\s*-\s*/, '') || 'n.d.';
-    o._settore = (o.settore_sottosettore || '').replace(/^[\d.]+\s*-\s*/, '') || 'n.d.';
+    o._titolo = titoloCase((o.descrizione_intervento || '').trim());
+    o._cerca =`${o.cod_int_amm} ${o.descrizione_intervento || ''} ${o.rup || ''} ${o.cup || ''}`.toLowerCase();
+    o._tipologia = accenta((o.tipologia || '').replace(/^\d+\s*-\s*/, '')) || 'n.d.';
+    o._settore = accenta((o.settore_sottosettore || '').replace(/^[\d.]+\s*-\s*/, '')) || 'n.d.';
     o._rup = o.rup || 'Non indicata';
     o._fonte = o.fonti_tipologia_risorsa || 'Non indicata';
     o._cup = o.cup_presente ? 'Presente' : o.cup_2026_mancante ? 'Mancante, atteso nel 2026' : 'Mancante';
     o._fascia = fasciaImporto(o.importo);
   }
+}
+
+// Le descrizioni arrivano in MAIUSCOLO: maiuscola iniziale per parola, tranne articoli e preposizioni brevi.
+// «CITTA'» diventa «Città»; numeri romani e sigle note restano maiuscoli.
+const MINUSCOLE = new Set(['e', 'di', 'da', 'del', 'dello', 'della', 'dei', 'delle', 'degli', 'in', 'a', 'per', 'con', 'su', 'il', 'lo', 'la', 'i', 'le', 'al', 'alla', 'ai', 'nel', 'nella', 'ed', 'o', "dell'", "all'"]);
+const SIGLE = new Set(['zen', 'peep', 'prg', 'amat', 'rap', 'pa', 'sn']);
+const ACCENTATE = { a: 'à', e: 'è', i: 'ì', o: 'ò', u: 'ù' };
+// «collettivita'» → «collettività» (solo apostrofo a fine parola)
+const accenta = (t) => t.replace(/(?<!\bp)([aeiou])'(?!\p{L})/giu, (_, v) => ACCENTATE[v.toLowerCase()]);
+function titoloCase(t) {
+  // se il testo ha apici usati come virgolette ('Svincolo Oreto - Partanna') non si accentano gli apostrofi finali
+  const virgolette = /(^|\s)'/.test(t);
+  return t.toLowerCase()
+    .replace(/(?<!\bp)([aeiou])'(?!\p{L})/gu, (m, v) => (virgolette ? m : ACCENTATE[v]))
+    .replace(/[\p{L}\p{N}]+'?/gu, (w, i) => {
+      if (SIGLE.has(w) || /^[ivx]+$/.test(w) && w.length > 1) return w.toUpperCase();
+      return i > 0 && MINUSCOLE.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1);
+    })
+    .replace(/\bi\.(?=\d)/g, 'I.');
 }
 
 const FASCE_IMPORTO = ['Fino a 150 mila €', '150 mila – 1 mln €', '1 – 5 mln €', '5 – 20 mln €', 'Oltre 20 mln €'];

@@ -57,6 +57,21 @@ function layerInterventi() {
   ];
 }
 
+// Raggio dei punti in scala sull'importo: un fattore per fascia (stessa suddivisione dei filtri), applicato a ogni stop dello zoom.
+// Il fattore si cerca per chiave della geometria (chiaveFeature) con un 'match': le chiavi sono raggruppate per fattore.
+const FATTORE_FASCIA = [0.8, 1, 1.3, 1.7, 2.2];
+const RAGGIO_BASE = [[11, 2.5], [14, 4.5], [17, 8]];
+function raggioPunti(chiavi, importoDi) {
+  const perFattore = new Map();
+  for (const k of chiavi) {
+    const imp = Math.max(0, ...k.split(';').map((c) => importoDi(c.trim()) || 0));
+    const f = FATTORE_FASCIA[FASCE_IMPORTO.indexOf(fasciaImporto(imp))];
+    if (f !== 1) perFattore.set(f, [...(perFattore.get(f) || []), k]);
+  }
+  const fattore = ['match', chiaveFeature, ...[...perFattore].flatMap(([f, ks]) => [ks, f]), 1];
+  return ['interpolate', ['linear'], ['zoom'], ...RAGGIO_BASE.flatMap(([z, r]) => [z, ['*', r, fattore]])];
+}
+
 const LAYER_GEOMETRIE = ['poligoni-fill', 'poligoni-line', 'linee', 'punti'];
 
 // Filtro che non seleziona nulla (layer di selezione vuoti)

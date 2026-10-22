@@ -2,6 +2,8 @@
 // (faceted search: le opzioni di una dimensione si contano applicando tutti i filtri TRANNE il suo).
 // Dipende da data.js, style.js, map.js. Notifica con l'evento 'filtri-cambiati'.
 
+const POS_SI = 'Sulla mappa';
+const POS_NO = 'Fuori mappa (non localizzato)';
 const SET_DIMS = {
   anno: { titolo: 'Annualità (avvio affidamento)', get: (o) => String(o.annualita_avvio_affidamento), label: (v) => ANNO_LABEL[v] || v, colore: (v) => COLORI_CLASSE[ANNO_CLASSE[v]] },
   settore: { titolo: 'Settore', get: (o) => o._settore },
@@ -11,11 +13,12 @@ const SET_DIMS = {
   rup: { titolo: 'RUP', get: (o) => o._rup },
   fonte: { titolo: 'Fonte di finanziamento', get: (o) => o._fonte },
   fascia: { titolo: 'Importo (triennio)', get: (o) => o._fascia },
+  pos: { titolo: 'Localizzazione', get: (o) => (o.pos ? POS_SI : POS_NO) },
 };
 const COMBO_DIMS = ['rup']; // dimensioni a scelta multipla con menu a discesa e ricerca (troppi valori per i chip)
 const GEO_DIMS = ['circ', 'quart', 'upl'];
 const GEO_TITOLI = { circ: 'Circoscrizione', quart: 'Quartiere', upl: 'UPL · Unità di Primo Livello' };
-const ORDINE_FISSO = { cup: ['Presente', 'Mancante, atteso nel 2026', 'Mancante'], fascia: FASCE_IMPORTO };
+const ORDINE_FISSO = { pos: [POS_SI, POS_NO], cup: ['Presente', 'Mancante, atteso nel 2026', 'Mancante'], fascia: FASCE_IMPORTO };
 
 const st = { circ: '', quart: '', upl: '', q: '' };
 for (const d of Object.keys(SET_DIMS)) st[d] = new Set();
@@ -41,7 +44,7 @@ function passa(o, skip = []) {
 function risultati() { return DATI.interventi.filter((o) => passa(o)); }
 
 // Aggregazione per valore di una dimensione ({ n, costo }), con tutti gli altri filtri applicati.
-function aggrega(dim) {
+function aggrega(dim, extra = null) {
   const agg = new Map();
   const aggiungi = (v, o) => {
     const a = agg.get(v) || { n: 0, costo: 0 };
@@ -51,7 +54,7 @@ function aggrega(dim) {
   };
   const idx = GEO_DIMS.indexOf(dim);
   for (const o of DATI.interventi) {
-    if (!passa(o, [dim])) continue;
+    if (!passa(o, [dim]) || (extra && !extra(o))) continue;
     if (idx >= 0) {
       const visti = new Set();
       for (const t of o.geo) {
@@ -130,6 +133,7 @@ function aggiorna({ salvaUrl = true } = {}) {
   renderFiltri();
   renderChips();
   renderLegenda();
+  renderCopertura();
   aggiornaMappaDaFiltri(ultimiRisultati);
   if (salvaUrl) scriviUrl();
   document.dispatchEvent(new CustomEvent('filtri-cambiati', { detail: { risultati: ultimiRisultati, attivi: numAttivi() } }));
@@ -275,6 +279,7 @@ function renderLegenda() {
       'data-dim': 'anno', 'data-val': v, 'aria-pressed': String(on),
     }, [el('span', { class: 'legend-dot', style: `background:${SET_DIMS.anno.colore(v)}` }), el('span', { class: 'legend-label', text: ANNO_LABEL[v] }), el('span', { class: 'legend-count', text: String(n) })]));
   }
+  box.append(el('div', { class: 'legend-row static legend-nota', text: 'Dimensione del punto = importo' }));
   box.append(el('div', { class: 'legend-row static' }, [el('span', { class: 'legend-dot', style: `background:${COLORE_APPROSSIMATO}` }), el('span', { class: 'legend-label', text: 'Posizione approssimata (~300 m)' })]));
   box.append(el('label', { class: 'legend-row legend-check' }, [
     el('input', { type: 'checkbox', id: 'lg-non-assegnate', checked: statoMappa.mostraNonAssegnate && numAttivi() === 0, disabled: numAttivi() > 0 }),
@@ -282,7 +287,33 @@ function renderLegenda() {
   ]));
 }
 
+// Parte di mappa non coperta dal pannello laterale
+function boundsVisibili() {
+  const c = map.getCanvas();
+  const destra = paddingMappa(0).right;
+  return new maplibregl.LngLatBounds(map.unproject([0, c.clientHeight]), map.unproject([c.clientWidth - destra, 0]));
+}
+
+// Banner in alto: interventi nella vista corrente (si aggiorna con zoom e spostamenti) e interventi fuori mappa
+// (senza geometria: valgono quasi metà dell'importo e non compaiono mai sulla mappa).
+function renderCopertura() {
+  const box = document.getElementById('cov-banner');
+  const vista = boundsVisibili();
+  const sulla = ultimiRisultati.filter((o) => o.pos && vista.contains(o.pos));
+  const fuori = ultimiRisultati.filter((o) => !o.pos);
+  const imp = (l) => fmtEuroCompatto(l.reduce((s, o) => s + (o.importo || 0), 0));
+  const attivo = st.pos.has(POS_NO);
+  box.replaceChildren(
+    el('span', { class: 'cov-item' }, [el('strong', { text: fmtNum.format(sulla.length) }), ` in vista · ${imp(sulla)}`]),
+    el('button', { type: 'button', class: `cov-item cov-fuori${attivo ? ' active' : ''}`, 'aria-pressed': String(attivo), disabled: !fuori.length && !attivo,
+      title: attivo ? 'Torna a tutti gli interventi' : 'Mostra in elenco gli interventi senza geometria' }, [el('strong', { text: fmtNum.format(fuori.length) }), ` fuori mappa · ${imp(fuori)}`]),
+  );
+}
+
 // ── Mappa ───────────────────────────────────────────────────────────────────
+let timerVista;
+map.on('moveend', () => { clearTimeout(timerVista); timerVista = setTimeout(() => { if (ultimiRisultati.length || DATI.interventi.length) renderCopertura(); }, 120); });
+
 function aggiornaMappaDaFiltri(res) {
   if (numAttivi() === 0) { statoMappa.chiavi = null; applicaFiltriMappa(); return; }
   const ammessi = new Set(res.map((o) => o.cod_int_amm));
@@ -295,7 +326,7 @@ function zoomSuRisultati() {
   if (!pts.length) return;
   const b = new maplibregl.LngLatBounds(pts[0], pts[0]);
   for (const p of pts) b.extend(p);
-  map.fitBounds(b, { padding: paddingMappa(40), maxZoom: 17, duration: 700 });
+  map.fitBounds(b, { padding: paddingMappa(40), maxZoom: 17, duration: durata(700) });
 }
 
 // ── URL (stato condivisibile) ───────────────────────────────────────────────
@@ -330,7 +361,7 @@ function renderSuggerimenti() {
   if (!trovati.length) dd.append(el('div', { class: 'pf-dd-empty', text: 'Nessun intervento trovato' }));
   for (const o of trovati) {
     dd.append(el('div', { class: 'pf-dd-item', role: 'option', 'data-cod': o.cod_int_amm }, [
-      el('span', { class: 'pf-dd-name', text: (o.descrizione_intervento || '').slice(0, 80) }),
+      el('span', { class: 'pf-dd-name', text: o._titolo.slice(0, 80) }),
       el('span', { class: 'pf-dd-badge', text: o.cod_int_amm }),
     ]));
   }
@@ -389,6 +420,7 @@ function initFiltriUI() {
   document.getElementById('legend-rows').addEventListener('change', (e) => {
     if (e.target.id === 'lg-non-assegnate') { statoMappa.mostraNonAssegnate = e.target.checked; applicaFiltriMappa(); }
   });
+  document.getElementById('cov-banner').addEventListener('click', (e) => { if (e.target.closest('.cov-fuori')) toggleValore('pos', POS_NO); });
   document.getElementById('pf-reset').addEventListener('click', () => { resetFiltri(); aggiorna(); });
   document.getElementById('pf-zoom').addEventListener('click', zoomSuRisultati);
   document.getElementById('pf-filter-btn').addEventListener('click', () => window.mostraVista?.('filtri'));

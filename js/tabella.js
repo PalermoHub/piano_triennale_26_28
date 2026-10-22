@@ -111,7 +111,6 @@ function initTabella() {
   tab.visibili = typeof risultati === 'function' ? risultati() : DATI.interventi;
   tabRenderColonne();
 
-  document.getElementById('tb-tabella').addEventListener('click', () => tabApri());
   document.getElementById('tab-close').addEventListener('click', () => tabApri(false));
   document.getElementById('tab-csv').addEventListener('click', () => tabEsporta('csv'));
   document.getElementById('tab-json').addEventListener('click', () => tabEsporta('json'));
@@ -155,8 +154,6 @@ function initTabella() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tab.aperta && !e.target.closest('input, select, textarea')) tabApri(false); });
 }
 
-// I dati sono caricati in modo asincrono da map.js/filters.js: parte appena disponibili
-(function attendiDati() {
-  if (DATI.interventi.length) initTabella();
-  else setTimeout(attendiDati, 150);
-})();
+// Caricato al primo clic su «Tabella» (vedi panel.js): i dati ci sono già
+initTabella();
+tabApri(true);

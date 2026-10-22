@@ -2,7 +2,9 @@
 
 const PMTILES_URL = new URL('data/interventi_oopp_2026_2028.pmtiles', location.href).href;
 const BOUNDS = [[13.27199, 38.065508], [13.445067, 38.223314]];
-const LARGHEZZA_PANNELLO = 406; // pannello destro + maniglia
+const LARGHEZZA_PANNELLO = 406;
+// Con «riduci movimento» attivo nel sistema le animazioni della mappa durano 0
+const durata = (ms) => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms); // pannello destro + maniglia
 
 // Token pubblico Mapbox (pk.), lo stesso del Digital Twin: visibile nel client per natura, limitato agli URL dal pannello Mapbox.
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2J2aXRyYW5vIiwiYSI6ImNtdmdoY2YzZzAxeTkyeXF1NnBhczZvZWQifQ.EAOHORsNWVO6xD7SJm0NLw';
@@ -87,6 +89,12 @@ map.once('style.load', () => {
   map.fire('interventi-pronti');
 });
 
+// Cerchi più grandi per gli interventi più costosi (richiede i dati: si chiama dopo caricaDati)
+function aggiornaRaggiPunti() {
+  if (!map.getLayer('punti')) return;
+  map.setPaintProperty('punti', 'circle-radius', raggioPunti(DATI.chiavi, (c) => DATI.perCodice.get(c)?.importo));
+}
+
 // Evidenzia tutte le geometrie (punti, linee, poligoni) di un intervento
 function evidenziaInMappa(cod) {
   if (!map.getLayer('sel-punti')) return;
@@ -97,7 +105,7 @@ function evidenziaInMappa(cod) {
 
 function zoomIntervento(o) {
   if (!o?.pos) return;
-  map.flyTo({ center: o.pos, zoom: Math.max(map.getZoom(), 16), padding: paddingMappa(0), duration: 800 });
+  map.flyTo({ center: o.pos, zoom: Math.max(map.getZoom(), 16), padding: paddingMappa(0), duration: durata(800) });
 }
 
 // ── Hover e click ───────────────────────────────────────────────────────────
@@ -110,12 +118,6 @@ function codiciDi(props) {
 
 let popupChiave = null;
 
-// Le descrizioni arrivano in MAIUSCOLO: maiuscola iniziale per parola, tranne articoli e preposizioni brevi
-const MINUSCOLE = new Set(['e', 'di', 'da', 'del', 'dello', 'della', 'dei', 'delle', 'degli', 'in', 'a', 'per', 'con', 'su', 'il', 'lo', 'la', 'i', 'le', 'al', 'alla', 'ai', 'nel', 'nella', 'ed', 'o', "dell'", "all'"]);
-function titoloCase(t) {
-  return t.toLowerCase().replace(/[\p{L}\p{N}']+/gu, (w, i) => (i > 0 && MINUSCOLE.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)));
-}
-
 function contenutoPopup(props) {
   const cod = codiciDi(props);
   const o = DATI.perCodice.get(cod[0]);
@@ -125,7 +127,7 @@ function contenutoPopup(props) {
     el('strong', { text: cod[0] || 'Geometria non assegnata' }),
     cod.length > 1 ? el('span', { class: 'ph-altri', text: `+${cod.length - 1}` }) : null,
   ].filter(Boolean));
-  const desc = (o?.descrizione_intervento || props.descrizione || '').trim();
+  const desc = o?._titolo || titoloCase((props.descrizione || '').trim());
   const nodi = [titolo, desc ? el('div', { class: 'ph-desc', text: titoloCase(desc) }) : null];
   if (o) {
     const chip = [
@@ -192,7 +194,7 @@ document.getElementById('map-toolbar').addEventListener('click', (e) => {
 });
 function vistaIniziale(animata = true) {
   const cam = map.cameraForBounds(BOUNDS, { padding: paddingMappa(30) });
-  map.easeTo({ center: cam.center, zoom: Math.max(cam.zoom, ZOOM_MIN_DATI), duration: animata ? 800 : 0 });
+  map.easeTo({ center: cam.center, zoom: Math.max(cam.zoom, ZOOM_MIN_DATI), duration: animata ? durata(800) : 0 });
 }
 document.getElementById('tb-home').addEventListener('click', () => vistaIniziale());
 map.once('style.load', () => { if (map.getZoom() < ZOOM_MIN_DATI) vistaIniziale(false); });
