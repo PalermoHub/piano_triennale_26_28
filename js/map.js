@@ -117,6 +117,18 @@ function codiciDi(props) {
 }
 
 let popupChiave = null;
+// Il popup resta nel DOM e si nasconde via CSS: rimuoverlo e ricrearlo a ogni ingresso lo faceva lampeggiare in alto a sx prima del posizionamento
+let popupNascosto = false;
+function nascondiPopup() {
+  if (!popup.isOpen() || popupNascosto) return;
+  popupNascosto = true;
+  popup.getElement().classList.add('ph-nascosto');
+}
+function mostraPopup() {
+  if (!popupNascosto) return;
+  popupNascosto = false;
+  popup.getElement().classList.remove('ph-nascosto');
+}
 
 function contenutoPopup(props) {
   const cod = codiciDi(props);
@@ -145,12 +157,17 @@ map.on('mousemove', (e) => {
   if (!map.getLayer('punti')) return;
   const f = map.queryRenderedFeatures(e.point, { layers: LAYER_INTERATTIVI })[0];
   map.getCanvas().style.cursor = f ? 'pointer' : '';
-  if (!f) { popup.remove(); return; }
+  if (!f) { nascondiPopup(); return; }
   const chiave = f.properties.cod_int || f.properties.cod_assegnato || '';
-  if (chiave !== popupChiave || !popup.isOpen()) { popup.setDOMContent(contenutoPopup(f.properties)); popupChiave = chiave; }
-  popup.setLngLat(e.lngLat).addTo(map);
+  const nuovo = chiave !== popupChiave || !popup.isOpen() || popupNascosto;
+  if (nuovo) { popup.setDOMContent(contenutoPopup(f.properties)); popupChiave = chiave; }
+  // Sui punti il riquadro resta ancorato al pallino: seguire il mouse ne farebbe oscillare l'ancora (sfarfallio)
+  const puntuale = f.geometry.type === 'Point';
+  if (nuovo || !puntuale) popup.setLngLat(puntuale ? f.geometry.coordinates : e.lngLat);
+  if (!popup.isOpen()) popup.addTo(map);
+  mostraPopup();
 });
-map.getCanvas().addEventListener('mouseleave', () => popup.remove());
+map.getCanvas().addEventListener('mouseleave', nascondiPopup);
 
 map.on('click', (e) => {
   const f = map.queryRenderedFeatures(e.point, { layers: LAYER_INTERATTIVI })[0];

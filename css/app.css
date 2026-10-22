@@ -116,12 +116,13 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .pf-chip-opt { white-space: normal; text-align: left; }
 
 /* Popup hover */
-.popup-hover { pointer-events: none; }
+.popup-hover, .popup-hover .maplibregl-popup-content { pointer-events: none; }
 .popup-hover .maplibregl-popup-content {
   font-family: inherit; font-size: 12px; width: max-content; max-width: 300px; padding: 11px 13px;
   border-radius: 14px; border: 1px solid rgba(30, 60, 160, 0.12); box-shadow: 0 6px 22px rgba(20, 40, 100, 0.22);
 }
 .popup-hover .maplibregl-popup-tip { display: none; }
+.popup-hover.ph-nascosto { visibility: hidden; }
 .ph-titolo { display: flex; align-items: center; gap: 7px; color: var(--c-brand-blue); font-size: 14px; }
 .ph-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(30, 60, 160, 0.25); }
 .ph-altri { font-size: 11px; font-weight: 700; background: rgba(255, 153, 0, 0.18); color: #a35c00; border-radius: 8px; padding: 0 6px; }
