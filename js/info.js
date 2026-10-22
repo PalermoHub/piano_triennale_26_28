@@ -65,6 +65,14 @@
     t.focus();
   });
 
+  // Indice della guida: scorre alla sezione senza toccare l'hash dell'URL (contiene lo stato dei filtri)
+  document.getElementById('ipane-guida').addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-goto]');
+    if (!a) return;
+    e.preventDefault();
+    document.getElementById(a.dataset.goto)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   panes.forEach((p) => p.addEventListener('scroll', aggiornaTop, { passive: true }));
   top.addEventListener('click', () => attivo()?.scrollTo({ top: 0, behavior: 'smooth' }));
 

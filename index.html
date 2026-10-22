@@ -232,20 +232,188 @@
       </div>
 
       <div class="info-pane" id="ipane-guida" role="tabpanel" aria-labelledby="itab-guida" data-tab="guida" hidden>
-        <div class="panel-section">
-          <h3>Come leggere la mappa</h3>
-          <p class="panel-note">I colori indicano l’annualità di avvio: rosso I, arancio II, giallo III. In legenda si possono mostrare anche le geometrie non attribuibili a un intervento. Passando il mouse su un elemento compare un riquadro con titolo, settore, importo e annualità; un clic apre la scheda.</p>
+        <nav class="guida-toc" aria-label="Indice della guida">
+          <div class="guida-toc-title">In questa guida</div>
+          <ol>
+            <li><a href="#g-panoramica" data-goto="g-panoramica">Cosa vedi sullo schermo</a></li>
+            <li><a href="#g-mappa" data-goto="g-mappa">Muoversi sulla mappa</a></li>
+            <li><a href="#g-ricerca" data-goto="g-ricerca">Cercare un intervento</a></li>
+            <li><a href="#g-filtri" data-goto="g-filtri">Filtrare gli interventi</a>
+              <ol>
+                <li><a href="#g-filtri-come" data-goto="g-filtri-come">Come ragionano i filtri</a></li>
+                <li><a href="#g-filtri-dove" data-goto="g-filtri-dove">Dove: circoscrizione, quartiere, UPL</a></li>
+                <li><a href="#g-filtri-altri" data-goto="g-filtri-altri">Che cosa, quanto e come, chi</a></li>
+                <li><a href="#g-filtri-legenda" data-goto="g-filtri-legenda">Filtrare dalla legenda</a></li>
+                <li><a href="#g-filtri-reset" data-goto="g-filtri-reset">Togliere i filtri e zoomare sui risultati</a></li>
+              </ol>
+            </li>
+            <li><a href="#g-elenco" data-goto="g-elenco">Elenco degli interventi</a></li>
+            <li><a href="#g-scheda" data-goto="g-scheda">Scheda di un intervento</a></li>
+            <li><a href="#g-stats" data-goto="g-stats">Statistiche e classifiche</a></li>
+            <li><a href="#g-tabella" data-goto="g-tabella">Tabella ed esportazione dati</a></li>
+            <li><a href="#g-strumenti" data-goto="g-strumenti">Barra degli strumenti</a></li>
+            <li><a href="#g-condividi" data-goto="g-condividi">Condividere una vista</a></li>
+            <li><a href="#g-mobile" data-goto="g-mobile">Da telefono</a></li>
+            <li><a href="#g-tastiera" data-goto="g-tastiera">Scorciatoie da tastiera</a></li>
+          </ol>
+        </nav>
+
+        <div class="panel-section" id="g-panoramica">
+          <h3>1. Cosa vedi sullo schermo</h3>
+          <p class="panel-note">La mappa occupa tutto lo schermo e mostra gli interventi del Piano: ogni <strong>pallino</strong> è un intervento, le <strong>linee</strong> e le <strong>aree colorate</strong> sono interventi lineari (strade, canali) o estesi (parchi, lungomare). A sinistra c’è la barra degli strumenti, in basso a sinistra la legenda, in basso al centro la barra di ricerca, a destra il pannello con le schede <strong>Elenco · Scheda · Statistiche · Filtri · Info</strong>.</p>
+          <figure class="guida-fig"><img src="img/guida/01-panoramica.webp" alt="Schermata principale con mappa, barra strumenti, legenda, ricerca e pannello a destra" loading="lazy" width="1440" height="900"><figcaption>La schermata iniziale: 548 interventi, 4,37 miliardi di euro.</figcaption></figure>
+          <p class="panel-note">Il pannello a destra si apre e si chiude con la linguetta a forma di freccia (o con il tasto <kbd>P</kbd>). Tutto ciò che fai (cerchi, filtri, selezioni) aggiorna insieme mappa, elenco e statistiche.</p>
         </div>
-        <div class="panel-section">
-          <h3>Pannello a schede</h3>
-          <p class="panel-note"><strong>Elenco</strong> (ordinabile, ricerca testuale), <strong>Scheda</strong> (dettaglio dell’intervento), <strong>Statistiche</strong> (classifiche cliccabili sul sottoinsieme filtrato), <strong>Filtri</strong> a cascata: Circoscrizione → Quartiere → UPL, annualità, settore, RUP, importo, CUP, fonte di finanziamento. Ogni opzione indica quanti interventi darebbe; lo stato dei filtri è nell’indirizzo della pagina e si può condividere.</p>
+
+        <div class="panel-section" id="g-mappa">
+          <h3>2. Muoversi sulla mappa</h3>
+          <p class="panel-note">Trascina per spostarti, usa la rotella o lo <strong>slider arancione</strong> a destra per lo zoom (la mappa non si ruota). I <strong>colori</strong> indicano l’annualità di avvio dell’affidamento: <span class="dot d1"></span> rosso I (2026), <span class="dot d2"></span> arancio II (2027), <span class="dot d3"></span> giallo III (2028). I pallini <span class="dot d0"></span> grigi hanno una posizione <strong>approssimata</strong> (circa 300 m) ricavata dal toponimo.</p>
+          <div class="guida-row">
+            <figure class="guida-fig"><img src="img/guida/04-tooltip.webp" alt="Riquadro che compare passando il mouse su un intervento" loading="lazy" width="520" height="320"><figcaption>Passa il mouse su un pallino: titolo, settore, importo e annualità.</figcaption></figure>
+            <div>
+              <p class="panel-note"><strong>Passa il mouse</strong> su un elemento per vedere un riquadro di anteprima. <strong>Clicca</strong> per aprire la scheda completa nel pannello a destra: la mappa si centra sull’intervento.</p>
+              <p class="panel-note">Un intervento può avere più geometrie (un punto e una linea, per esempio): selezionandolo si evidenziano tutte.</p>
+              <p class="panel-note">Gli interventi senza geometria (94 su 548) non compaiono sulla mappa, ma restano in elenco, in statistiche e in tabella, con l’etichetta <em>non localizzato</em>.</p>
+            </div>
+          </div>
         </div>
-        <div class="panel-section">
-          <h3>Barra degli strumenti</h3>
-          <p class="panel-note">Cambia basemap (chiara, scura, satellite), torna alla vista iniziale, schermo intero, tema scuro. <strong>Tabella</strong> apre la tabella dei dati in mappa: scegli righe e colonne ed esporta in CSV o JSON. Lo slider in alto a destra regola lo zoom.</p>
+
+        <div class="panel-section" id="g-ricerca">
+          <h3>3. Cercare un intervento</h3>
+          <p class="panel-note">La barra di ricerca è in basso al centro della mappa. Si attiva anche premendo <kbd>/</kbd>.</p>
+          <div class="guida-row">
+            <figure class="guida-fig"><img src="img/guida/05-ricerca.webp" alt="Barra di ricerca con l’elenco dei suggerimenti per la parola «scuola»" loading="lazy" width="520" height="470"><figcaption>Cercando «scuola» compaiono i primi suggerimenti, ognuno con il suo codice.</figcaption></figure>
+            <div>
+              <p class="panel-note"><strong>Cosa si cerca.</strong> Il testo che scrivi viene confrontato con il <strong>codice intervento</strong> (per esempio <code>05-08_049</code>), la <strong>descrizione</strong>, il <strong>nome del RUP</strong> e il <strong>CUP</strong>. Maiuscole e minuscole non contano.</p>
+              <p class="panel-note"><strong>Come si cerca.</strong> Basta scrivere un pezzo di parola: «scuol» trova «scuola» e «scuole». Se scrivi più parole, vengono cercate <em>insieme e di seguito</em> («scuola materna» trova solo chi le ha scritte così, una dopo l’altra). Per restringere meglio, scrivi una parola sola e aggiungi un filtro.</p>
+              <p class="panel-note"><strong>Cosa succede.</strong> Appena scrivi, mappa, elenco e statistiche si limitano agli interventi trovati. Sotto la barra compaiono fino a <strong>8 suggerimenti</strong>: scegline uno con il clic, oppure con <kbd>↑</kbd> <kbd>↓</kbd> e <kbd>Invio</kbd>. L’intervento scelto si apre nella scheda e la mappa ci zooma sopra.</p>
+              <p class="panel-note"><strong>Insieme ai filtri.</strong> La ricerca si combina con i filtri: se hai scelto la circoscrizione II, i suggerimenti riguardano solo quella circoscrizione. La <strong>✕</strong> nella barra cancella il testo; <kbd>Esc</kbd> chiude i suggerimenti.</p>
+            </div>
+          </div>
         </div>
-        <div class="panel-section">
-          <h3>Scorciatoie da tastiera</h3>
+
+        <div class="panel-section" id="g-filtri">
+          <h3>4. Filtrare gli interventi</h3>
+          <p class="panel-note">I filtri sono nella scheda <strong>Filtri</strong> del pannello (tasto <kbd>F</kbd>, oppure il pulsante azzurro accanto alla ricerca). Il numero arancione sulla scheda dice quanti filtri sono attivi.</p>
+          <figure class="guida-fig guida-fig-narrow"><img src="img/guida/06-filtri.webp" alt="Scheda Filtri con Dove, Che cosa, Quanto e come, Chi" loading="lazy" width="400" height="900"><figcaption>La scheda Filtri è divisa in quattro blocchi: Dove, Che cosa, Quanto e come, Chi.</figcaption></figure>
+
+          <h4 id="g-filtri-come">Come ragionano i filtri</h4>
+          <ul class="info-list">
+            <li><strong>Più scelte nello stesso gruppo = «oppure».</strong> Settore «Stradali» e «Beni culturali» insieme mostrano gli interventi di uno <em>o</em> dell’altro settore.</li>
+            <li><strong>Gruppi diversi = «e».</strong> Circoscrizione II <em>e</em> annualità 2026 mostra solo gli interventi che rispettano entrambe le condizioni.</li>
+            <li><strong>Il numero accanto a ogni opzione</strong> dice quanti interventi otterresti scegliendola, tenendo conto di tutti gli altri filtri già attivi. Le opzioni che darebbero zero risultati spariscono: non puoi finire in una lista vuota.</li>
+            <li><strong>Sono «interconnessi»:</strong> ogni scelta restringe le opzioni degli altri gruppi, quindi conviene procedere dal generale al particolare.</li>
+            <li>In fondo al pannello una riga riassume il risultato: <em>«5 di 548 interventi · 15,2 mln €»</em>.</li>
+          </ul>
+
+          <h4 id="g-filtri-dove">Dove: circoscrizione, quartiere, UPL</h4>
+          <div class="guida-row">
+            <figure class="guida-fig guida-fig-narrow"><img src="img/guida/08-combo-quartiere.webp" alt="Campo Quartiere con l’elenco dei quartieri che contengono la lettera s" loading="lazy" width="400" height="900"><figcaption>Scrivendo «s» il campo propone i quartieri con una parola che inizia per s, con il numero di interventi.</figcaption></figure>
+            <div>
+              <p class="panel-note">Sono tre campi a <strong>scelta singola</strong> con menu a discesa. Clicca nel campo: appare l’elenco. Puoi scorrerlo, oppure <strong>scrivere le prime lettere</strong> per restringerlo (cerca all’inizio di ogni parola: «s» non trova «IV»). Scegli con il clic o con <kbd>↑</kbd> <kbd>↓</kbd> e <kbd>Invio</kbd>. Per togliere la scelta, apri di nuovo il menu e clicca <strong>✕ Tutte…</strong>.</p>
+              <p class="panel-note"><strong>La cascata.</strong> I tre campi sono in gerarchia: <em>Circoscrizione → Quartiere → UPL</em>. Se scegli la circoscrizione II, nel menu dei quartieri restano solo quelli della II, e le UPL solo quelle di quei quartieri. Se scegli prima un quartiere, la circoscrizione si adegua. Una scelta non più coerente con le altre viene azzerata da sola.</p>
+              <p class="panel-note"><strong>UPL</strong> è l’Unità di Primo Livello, la suddivisione più fine del territorio comunale. Un intervento con più geometrie può cadere in più zone: compare in tutte.</p>
+            </div>
+          </div>
+          <figure class="guida-fig guida-fig-narrow"><img src="img/guida/09-cascata.webp" alt="Con la circoscrizione II scelta, i numeri delle altre opzioni si riducono" loading="lazy" width="400" height="900"><figcaption>Con la circoscrizione II i numeri cambiano: 5 interventi del 2026, 40 del 2027, 18 del 2028.</figcaption></figure>
+
+          <h4 id="g-filtri-altri">Che cosa, quanto e come, chi</h4>
+          <p class="panel-note">Gli altri gruppi sono sezioni che si aprono e si chiudono cliccando sul titolo; a gruppo chiuso, sotto il titolo restano visibili le scelte fatte.</p>
+          <ul class="info-list">
+            <li><strong>Annualità</strong>: anno di avvio dell’affidamento (2026, 2027, 2028).</li>
+            <li><strong>Settore</strong> e <strong>Tipologia</strong>: la natura dell’opera (stradali, scolastiche, beni culturali…; nuova realizzazione, manutenzione…).</li>
+            <li><strong>Priorità</strong>: il livello assegnato dal Comune.</li>
+            <li><strong>Importo (triennio)</strong>: cinque fasce, da «Fino a 150 mila €» a «Oltre 20 mln €».</li>
+            <li><strong>CUP</strong>: presente, mancante, oppure mancante ma atteso nel 2026.</li>
+            <li><strong>Fonte di finanziamento</strong>: come è finanziata l’opera.</li>
+            <li><strong>RUP</strong>: il Responsabile unico del progetto. Sono molti (62), perciò è un menu con ricerca: scrivi parte del cognome e scegli. Si possono scegliere più RUP.</li>
+          </ul>
+          <p class="panel-note">I gruppi con molte opzioni ne mostrano le più numerose: <strong>«+ altre N opzioni»</strong> le apre tutte, «Mostra meno» le richiude. Per scegliere o togliere un’opzione basta un clic.</p>
+          <figure class="guida-fig guida-fig-narrow"><img src="img/guida/10-rup.webp" alt="Menu del RUP con ricerca" loading="lazy" width="400" height="900"><figcaption>Il filtro RUP: scrivi una lettera o un cognome e compaiono i responsabili, con il numero di interventi.</figcaption></figure>
+
+          <h4 id="g-filtri-legenda">Filtrare dalla legenda</h4>
+          <div class="guida-row">
+            <figure class="guida-fig"><img src="img/guida/03-legenda.webp" alt="Legenda delle annualità con i conteggi" loading="lazy" width="250" height="145"><figcaption>La legenda in basso a sinistra.</figcaption></figure>
+            <div>
+              <p class="panel-note">La legenda è anche un filtro rapido: clicca una <strong>annualità</strong> per mostrare solo quella (le altre diventano sbiadite), clicca di nuovo per toglierla. I numeri a destra si aggiornano con gli altri filtri. Più sotto puoi spuntare <strong>«Mostra geometrie non assegnate»</strong> per vedere anche le geometrie che non è stato possibile collegare a un intervento (utile solo senza filtri attivi). Un clic sul titolo della legenda la comprime.</p>
+            </div>
+          </div>
+
+          <h4 id="g-filtri-reset">Togliere i filtri e zoomare sui risultati</h4>
+          <figure class="guida-fig"><img src="img/guida/17-elenco-filtrato.webp" alt="Mappa e elenco con circoscrizione II e annualità 2026: 5 interventi" loading="lazy" width="1440" height="900"><figcaption>Circoscrizione II + annualità 2026: restano 5 interventi, sia sulla mappa sia in elenco.</figcaption></figure>
+          <ul class="info-list">
+            <li><strong>↗ Zoom sui risultati</strong> (in fondo ai Filtri) inquadra tutti gli interventi trovati.</li>
+            <li><strong>Ripristina filtri</strong> azzera tutto, ricerca compresa. Per togliere un filtro solo, clicca di nuovo la sua opzione (o «✕ Tutte…» nei menu Dove).</li>
+          </ul>
+        </div>
+
+        <div class="panel-section" id="g-elenco">
+          <h3>5. Elenco degli interventi</h3>
+          <div class="guida-row">
+            <figure class="guida-fig guida-fig-narrow"><img src="img/guida/11-elenco.webp" alt="Elenco degli interventi ordinato per importo" loading="lazy" width="400" height="900"><figcaption>L’elenco, ordinato per importo decrescente.</figcaption></figure>
+            <div>
+              <p class="panel-note">È la prima scheda del pannello e mostra gli interventi che rispettano ricerca e filtri. In alto vedi quanti sono e il loro importo totale. Ogni riga ha pallino dell’annualità, codice, importo e descrizione; <em>non localizzato</em> indica che non ha una posizione sulla mappa.</p>
+              <p class="panel-note"><strong>Ordina per</strong> importo, codice o anno di avvio; la freccia accanto inverte l’ordine (crescente o decrescente). Con <kbd>↑</kbd> <kbd>↓</kbd> scorri la lista, <kbd>Invio</kbd> apre la scheda. Un clic su una riga apre la scheda e porta la mappa sull’intervento.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="g-scheda">
+          <h3>6. Scheda di un intervento</h3>
+          <div class="guida-row">
+            <figure class="guida-fig guida-fig-narrow"><img src="img/guida/12-scheda.webp" alt="Scheda di un intervento con posizione, importi e Scheda D" loading="lazy" width="400" height="900"><figcaption>La scheda dell’intervento 01-01_003.</figcaption></figure>
+            <div>
+              <p class="panel-note">In alto: titolo, annualità, importo e le etichette principali (avvio, settore, tipologia, presenza del CUP). Sotto, il dettaglio è in <strong>sezioni ripiegabili</strong>: Posizione nel territorio (circoscrizione, quartiere, UPL), Importi anno per anno, Scheda D (RUP, CUI, CUP, settore, priorità…), e altre se i dati ci sono. Clicca il titolo di una sezione per aprirla o chiuderla; il programma ricorda cosa hai chiuso.</p>
+              <p class="panel-note">Le frecce <strong>‹ ›</strong> (o i tasti <kbd>[</kbd> <kbd>]</kbd>) passano all’intervento precedente o successivo dell’elenco. <strong>Elenco</strong> in alto a sinistra (o <kbd>Esc</kbd>) torna alla lista.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="g-stats">
+          <h3>7. Statistiche e classifiche</h3>
+          <div class="guida-row">
+            <figure class="guida-fig guida-fig-narrow"><img src="img/guida/13-statistiche.webp" alt="Scheda Statistiche con numeri, spesa per anno e classifiche" loading="lazy" width="400" height="900"><figcaption>Statistiche sugli interventi filtrati.</figcaption></figure>
+            <div>
+              <p class="panel-note">Numeri e importi del <strong>sottoinsieme filtrato</strong>: quanti interventi, importo nel triennio, importo medio, quanti senza CUP, spesa per anno. Seguono le classifiche di circoscrizioni, quartieri, settori e fonti di finanziamento, ognuna <em>per numero</em> e <em>per importo</em>.</p>
+              <p class="panel-note">Le classifiche sono <strong>cliccabili</strong>: un clic su una voce applica quel filtro, un secondo clic lo toglie. È il modo più veloce per esplorare: «dove si spende di più?» → clic sul quartiere → torna all’elenco.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="g-tabella">
+          <h3>8. Tabella ed esportazione dati</h3>
+          <figure class="guida-fig"><img src="img/guida/14-tabella.webp" alt="Tabella dati in basso con pulsanti Colonne, Esporta CSV, Esporta JSON" loading="lazy" width="1040" height="520"><figcaption>La tabella dati, qui con filtri attivi.</figcaption></figure>
+          <p class="panel-note">Il pulsante <strong>Tabella</strong> della barra strumenti apre un cassetto in basso con i dati degli interventi in mappa (quelli che rispettano i filtri). Con <strong>Colonne</strong> scegli quali mostrare. Spunta le caselle a sinistra per selezionare le righe: <strong>Esporta CSV</strong> o <strong>Esporta JSON</strong> scaricano le righe spuntate, o tutte se non ne hai spuntata nessuna. Un clic su una riga porta la mappa sull’intervento. La ✕ chiude il cassetto.</p>
+        </div>
+
+        <div class="panel-section" id="g-strumenti">
+          <h3>9. Barra degli strumenti</h3>
+          <figure class="guida-fig guida-fig-narrow guida-fig-small"><img src="img/guida/02-barra-strumenti.webp" alt="Barra degli strumenti" loading="lazy" width="42" height="330"></figure>
+          <ul class="info-list">
+            <li><strong>Home</strong>: torna alla vista iniziale su tutta Palermo.</li>
+            <li><strong>Chiara · Scura · SAT</strong>: cambia la cartografia di base (mappa chiara, mappa scura con tema scuro dell’interfaccia, immagini satellitari).</li>
+            <li><strong>Full</strong>: schermo intero.</li>
+            <li><strong>Tabella</strong>: vedi sopra.</li>
+            <li><strong>Info</strong>: questa finestra (metodologia, copertura, guida, credits). Si chiude con <kbd>Esc</kbd>, con la ✕ o cliccando fuori.</li>
+          </ul>
+        </div>
+
+        <div class="panel-section" id="g-condividi">
+          <h3>10. Condividere una vista</h3>
+          <p class="panel-note">Ricerca, filtri e intervento selezionato sono scritti nell’indirizzo della pagina (la parte dopo il <code>#</code>). Copia l’indirizzo dal browser e invialo: chi lo apre vede esattamente la tua stessa selezione.</p>
+        </div>
+
+        <div class="panel-section" id="g-mobile">
+          <h3>11. Da telefono</h3>
+          <div class="guida-row">
+            <figure class="guida-fig guida-fig-phone"><img src="img/guida/15-mobile.webp" alt="Mappa su telefono con barra di navigazione in basso" loading="lazy" width="780" height="1688"><figcaption>La mappa su telefono.</figcaption></figure>
+            <figure class="guida-fig guida-fig-phone"><img src="img/guida/16-mobile-filtri.webp" alt="Scheda Filtri su telefono" loading="lazy" width="780" height="1688"><figcaption>I filtri su telefono.</figcaption></figure>
+          </div>
+          <p class="panel-note">Sugli schermi stretti compare in basso una barra con <strong>Mappa · Elenco · Filtri · Statistiche · Info</strong>. Le schede occupano lo schermo; tocca <strong>Mappa</strong> per tornare alla cartina. Ricerca e filtri funzionano come su computer; un puntino sul tasto Filtri indica quanti ne hai attivi.</p>
+        </div>
+
+        <div class="panel-section" id="g-tastiera">
+          <h3>12. Scorciatoie da tastiera</h3>
           <dl class="kb-list">
             <dt>← →</dt><dd>cambia scheda (con il focus sulle schede)</dd>
             <dt>1 – 5</dt><dd>vai a Elenco, Scheda, Statistiche, Filtri, Info</dd>
