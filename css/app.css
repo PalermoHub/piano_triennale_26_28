@@ -126,12 +126,12 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .ph-chip { font-size: 10.5px; font-weight: 700; padding: 2px 9px; border-radius: 10px; background: rgba(36, 88, 200, 0.08); color: var(--c-brand-blue); border: 1px solid rgba(36, 88, 200, 0.25); }
 .ph-chip.imp { background: rgba(255, 153, 0, 0.14); color: #a35c00; border-color: rgba(255, 153, 0, 0.45); }
 .ph-hint { margin-top: 7px; font-size: 10px; color: #8a96b4; }
-[data-theme="dark"] .popup-hover .maplibregl-popup-content { background: #1c2438; border-color: rgba(255, 255, 255, 0.12); }
-[data-theme="dark"] .ph-titolo { color: #9db4ff; }
-[data-theme="dark"] .ph-desc { color: #c4cde6; }
-[data-theme="dark"] .ph-chip { background: rgba(120, 150, 255, 0.14); color: #a9bcff; border-color: rgba(120, 150, 255, 0.35); }
+[data-theme="dark"] .popup-hover .maplibregl-popup-content { background: #242426; border-color: rgba(255, 255, 255, 0.12); }
+[data-theme="dark"] .ph-titolo { color: #e4e4e8; }
+[data-theme="dark"] .ph-desc { color: #d4d4d8; }
+[data-theme="dark"] .ph-chip { background: rgba(255, 255, 255, 0.098); color: #e4e4e8; border-color: rgba(255, 255, 255, 0.245); }
 [data-theme="dark"] .ph-chip.imp { color: #ffc266; }
-[data-theme="dark"] .ph-dot { box-shadow: 0 0 0 2px #1c2438, 0 0 0 3px rgba(255, 255, 255, 0.3); }
+[data-theme="dark"] .ph-dot { box-shadow: 0 0 0 2px #242426, 0 0 0 3px rgba(255, 255, 255, 0.3); }
 
 /* Controlli MapLibre sotto la toolbar a sinistra: restano fuori dal pannello */
 .maplibregl-ctrl-top-left { top: 10px; left: 62px; }
@@ -179,9 +179,9 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 .sc-card-body .rp-punto-row-label { color: #5a6a98; }
 .sc-card-body .rp-punto-row-value { font-weight: 700; }
 .sc-card-body .sc-avviso:last-child { margin-bottom: 0; }
-[data-theme="dark"] .sc-card { background: rgba(18, 28, 58, 0.6); border-color: rgba(70, 110, 220, 0.25); }
-[data-theme="dark"] .sc-card-head { color: #dbe4ff; }
-[data-theme="dark"] .sc-card-body .rp-punto-row:nth-child(even), [data-theme="dark"] .sc-pos .rp-punto-row:nth-child(even) { background: rgba(120, 150, 255, 0.1); }
+[data-theme="dark"] .sc-card { background: rgba(36, 36, 38, 0.6); border-color: rgba(255, 255, 255, 0.125); }
+[data-theme="dark"] .sc-card-head { color: #e4e4e8; }
+[data-theme="dark"] .sc-card-body .rp-punto-row:nth-child(even), [data-theme="dark"] .sc-pos .rp-punto-row:nth-child(even) { background: rgba(255, 255, 255, 0.07); }
 .sc-badge.rup { background: rgba(36, 88, 200, 0.12); color: var(--c-brand-blue); border-color: rgba(36, 88, 200, 0.35); font-size: 11px; }
 
 /* Nota evidenziata (tab Info) */
@@ -192,3 +192,33 @@ button.legend-row { width: 100%; background: none; border: none; font-family: in
 }
 .panel-note.panel-callout a { color: inherit; font-weight: 700; }
 [data-theme="dark"] .panel-note.panel-callout { background: rgba(224, 160, 0, 0.16); border-color: rgba(224, 180, 58, 0.5); border-left-color: #e0a000; color: #ffe9b0; }
+
+/* ── Tema scuro neutro: elenco, scheda, statistiche, legenda ── */
+[data-theme="dark"] .el-toolbar { color: #8e8e96; border-bottom-color: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .el-toolbar select, [data-theme="dark"] .el-dir { background: #242426; color: #d4d4d8; border-color: rgba(255, 255, 255, 0.18); }
+[data-theme="dark"] .el-dir { color: #ff9900; }
+[data-theme="dark"] .el-dir:hover, [data-theme="dark"] .el-row:hover { background: rgba(255, 255, 255, 0.06); }
+[data-theme="dark"] .el-hint { color: #6e6e76; }
+[data-theme="dark"] .el-row { color: #d4d4d8; }
+[data-theme="dark"] .el-row.sel { background: rgba(255, 153, 0, 0.14); border-color: rgba(255, 153, 0, 0.4); }
+[data-theme="dark"] .el-cod { color: #ff9900; }
+[data-theme="dark"] .el-tag { background: rgba(255, 255, 255, 0.1); color: #b4b4ba; }
+[data-theme="dark"] .el-imp, [data-theme="dark"] .el-desc { color: #b4b4ba; }
+[data-theme="dark"] .rp-detail-topbar { background: rgba(36, 36, 38, 0.85); border-bottom-color: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .rp-punto-row-label, [data-theme="dark"] .sc-card-body .rp-punto-row-label { color: #8e8e96; }
+[data-theme="dark"] .rp-punto-row-value { color: #e4e4e8; }
+[data-theme="dark"] .rp-punto-row-value a, [data-theme="dark"] .sc-link { color: #ff9900; }
+[data-theme="dark"] .sc-avviso { background: rgba(255, 255, 255, 0.06); color: #d4d4d8; border-left-color: #ff9900; }
+[data-theme="dark"] .sc-badge.rup { background: rgba(255, 255, 255, 0.1); color: #e4e4e8; border-color: rgba(255, 255, 255, 0.3); }
+[data-theme="dark"] .sc-card-icon { color: #ff9900; }
+[data-theme="dark"] .legend-row { color: #b4b4ba; }
+[data-theme="dark"] .legend-dot { border-color: rgba(255, 255, 255, 0.5); }
+[data-theme="dark"] #rp-stats-body h3, [data-theme="dark"] #rp-info h3 { color: #8e8e96; }
+[data-theme="dark"] .kb-list { color: #b4b4ba; }
+[data-theme="dark"] .kb-list dt { color: #e4e4e8; background: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .stat-card-value, [data-theme="dark"] .rp-text strong { color: #ff9900; }
+[data-theme="dark"] .rp-text, [data-theme="dark"] .srank-value { color: #d4d4d8; }
+
+[data-theme="dark"] #pf-filter-btn { background: #ff9900; color: #fff; }
+[data-theme="dark"] .pfm-acc > summary::after { color: #ff9900; }
+[data-theme="dark"] .rp-punto-row-value a, [data-theme="dark"] .rp-punto-row-value a:visited { color: #ff9900; }

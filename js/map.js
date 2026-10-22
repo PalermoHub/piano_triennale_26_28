@@ -162,6 +162,7 @@ function impostaBasemap(chiave) {
     b.classList.toggle('active', on);
     b.setAttribute('aria-pressed', String(on));
   });
+  document.documentElement.dataset.theme = chiave === 'scura' ? 'dark' : 'light';
   aggiornaAttribuzioni(chiave);
 }
 
