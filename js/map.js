@@ -6,7 +6,8 @@ const LARGHEZZA_PANNELLO = 406; // pannello destro + maniglia
 
 // Token pubblico Mapbox (pk.), lo stesso del Digital Twin: visibile nel client per natura, limitato agli URL dal pannello Mapbox.
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2J2aXRyYW5vIiwiYSI6ImNtdmdoY2YzZzAxeTkyeXF1NnBhczZvZWQifQ.EAOHORsNWVO6xD7SJm0NLw';
-const RETINA = (globalThis.devicePixelRatio ?? 1) >= 2 ? '@2x' : '';
+// Tile 512 px a 1x anche su schermi retina: gli @2x pesano ~4 volte tanto e rallentano il primo caricamento
+const RETINA = '';
 const mapboxTiles = (stile) => [`https://api.mapbox.com/styles/v1/${stile}/tiles/512/{z}/{x}/{y}${RETINA}?access_token=${MAPBOX_TOKEN}`];
 const ATTR_MAPBOX = [['© Mapbox', 'https://www.mapbox.com/about/maps/'], ['© OpenStreetMap', 'https://www.openstreetmap.org/copyright']];
 
@@ -46,6 +47,7 @@ const map = new maplibregl.Map({
   minZoom: 10,
   maxZoom: 20,
   attributionControl: false,
+  hash: 'mappa', // posizione nell'URL come #mappa=zoom/lat/lng, accanto ai parametri di filtri e selezione
 });
 // Niente rotazione né beccheggio: mappa sempre a nord, vista dall'alto
 map.dragRotate.disable();
@@ -155,15 +157,23 @@ map.on('click', (e) => {
 });
 
 // ── Toolbar ────────────────────────────────────────────────────────────────
+// Un solo pulsante cambia il tema (interfaccia e cartografia); SAT è un interruttore a parte che sostituisce solo la cartografia
+const statoBase = { scuro: false, sat: false };
 function impostaBasemap(chiave) {
-  for (const k of Object.keys(BASEMAPS)) map.setLayoutProperty(`basemap-${k}-layer`, 'visibility', k === chiave ? 'visible' : 'none');
-  document.querySelectorAll('#tb-basemaps [data-basemap]').forEach((b) => {
-    const on = b.dataset.basemap === chiave;
-    b.classList.toggle('active', on);
-    b.setAttribute('aria-pressed', String(on));
-  });
-  document.documentElement.dataset.theme = chiave === 'scura' ? 'dark' : 'light';
-  aggiornaAttribuzioni(chiave);
+  if (chiave === 'satellite') statoBase.sat = !statoBase.sat;
+  else statoBase.scuro = !statoBase.scuro;
+  const attiva = statoBase.sat ? 'satellite' : statoBase.scuro ? 'scura' : 'chiara';
+  for (const k of Object.keys(BASEMAPS)) map.setLayoutProperty(`basemap-${k}-layer`, 'visibility', k === attiva ? 'visible' : 'none');
+  const sat = document.querySelector('[data-basemap="satellite"]');
+  sat.classList.toggle('active', statoBase.sat);
+  sat.setAttribute('aria-pressed', String(statoBase.sat));
+  const tema = document.getElementById('tb-tema');
+  tema.setAttribute('aria-pressed', String(statoBase.scuro));
+  tema.title = statoBase.scuro ? 'Passa al tema chiaro' : 'Passa al tema scuro';
+  tema.querySelector('.ico-luna').hidden = statoBase.scuro;
+  tema.querySelector('.ico-sole').hidden = !statoBase.scuro;
+  document.documentElement.dataset.theme = statoBase.scuro ? 'dark' : 'light';
+  aggiornaAttribuzioni(attiva);
 }
 
 function aggiornaAttribuzioni(chiave) {
@@ -176,7 +186,7 @@ function aggiornaAttribuzioni(chiave) {
   });
 }
 
-document.getElementById('tb-basemaps').addEventListener('click', (e) => {
+document.getElementById('map-toolbar').addEventListener('click', (e) => {
   const b = e.target.closest('[data-basemap]');
   if (b) impostaBasemap(b.dataset.basemap);
 });
