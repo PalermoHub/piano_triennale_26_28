@@ -1,0 +1,9 @@
+# materiale di lavoro: non pubblicare
+dati_lavoro/
+.remember/
+graphify-out/
+*:Zone.Identifier
+*.local.js
+.playwright-mcp/
+docs/
+scripts/

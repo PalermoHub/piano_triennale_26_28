@@ -1,0 +1,192 @@
+/* ════════════════════════════════════════
+   App-specific: Piano triennale OO.PP. Palermo 2026-2028
+   (si appoggia a map.css per toolbar/legenda/pannello/scala/attrib e a filters.css per ricerca e filtri)
+════════════════════════════════════════ */
+
+:focus-visible { outline: 2px solid var(--c-brand-blue); outline-offset: 2px; }
+
+.legend-dot {
+  display: inline-block; flex: none;
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 1px solid rgba(40, 40, 40, 0.55);
+}
+
+/* ── Viste del pannello: l'attributo hidden vince sul display:flex di .rp-view ── */
+.rp-view[hidden] { display: none; }
+#right-panel { width: 400px; }
+#rp-wrap { transform: translateX(calc(100% - 20px)); }
+#rp-wrap.open { transform: translateX(0); }
+
+/* Cinque schede: etichette più compatte */
+#rp-nav { padding: 8px 6px 0; gap: 0; }
+#rp-nav .rp-tab { padding: 8px 8px 9px; font-size: 11.5px; gap: 4px; }
+#rp-nav .rp-tab:focus-visible { outline-offset: -2px; border-radius: 6px 6px 0 0; }
+
+/* Legenda a righe cliccabili (button) */
+#map-legends .map-legend { min-width: 250px; max-width: 290px; }
+.legend-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #5a6a98; white-space: nowrap; }
+.legend-row + .legend-row { margin-top: 3px; }
+.legend-row .legend-dot { width: 11px; height: 11px; }
+button.legend-row { width: 100%; background: none; border: none; font-family: inherit; text-align: left; }
+.legend-row.static { margin-top: 2px; }
+.legend-check { display: flex; align-items: center; gap: 6px; margin-top: 6px; cursor: pointer; }
+.legend-check input { accent-color: var(--c-brand-orange); }
+.legend-check input:disabled + .legend-label { opacity: .45; }
+
+/* ── Elenco ── */
+.el-toolbar {
+  display: flex; align-items: center; gap: 8px; padding: 7px 16px;
+  border-bottom: 1px solid rgba(30, 60, 160, 0.1); font-size: 11px; color: #5a6a98; flex-shrink: 0;
+}
+.el-toolbar select {
+  font: inherit; font-size: 11px; padding: 3px 6px; border: 1px solid rgba(30, 60, 160, 0.2); border-radius: 6px; background: #fff;
+}
+.el-hint { margin-left: auto; color: #a0acd0; font-size: 10px; }
+#el-lista { flex: 1; padding: 6px 8px 12px; }
+.el-row {
+  display: flex; flex-direction: column; gap: 3px; width: 100%; text-align: left;
+  padding: 8px 10px; margin-bottom: 2px; border: 1px solid transparent; border-radius: 8px;
+  background: none; font-family: inherit; cursor: pointer; color: #1a2a50;
+}
+.el-row:hover { background: rgba(36, 88, 200, 0.06); }
+.el-row.sel { background: rgba(36, 88, 200, 0.12); border-color: rgba(36, 88, 200, 0.3); }
+.el-row:focus-visible { outline-offset: -2px; }
+.el-top { display: flex; align-items: center; gap: 7px; font-size: 11px; }
+.el-cod { font-weight: 700; color: var(--c-brand-blue); font-variant-numeric: tabular-nums; }
+.el-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: .03em; padding: 1px 6px; border-radius: 8px;
+  background: rgba(107, 114, 128, 0.14); color: #4b5563;
+}
+.el-imp { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; color: #3a4a78; }
+.el-desc {
+  font-size: 11.5px; line-height: 1.4; color: #3a4a78;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ── Scheda ── */
+.rp-detail-topbar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  border-bottom: 1px solid rgba(30, 60, 160, 0.1); background: rgba(240, 245, 255, 0.8); flex-shrink: 0;
+}
+.rp-detail-name-wrap { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+#rp-punto-back {
+  display: flex; align-items: center; gap: 3px; background: none; border: none; border-radius: 6px;
+  color: var(--c-brand-orange); font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 6px;
+}
+#rp-punto-back:hover { background: rgba(255, 153, 0, 0.12); }
+#rp-scheda .rp-punto-hdr { display: block; }
+#rp-scheda .rp-punto-quota-box { text-align: left; margin-top: 8px; }
+#rp-scheda .rp-punto-quota-unit { display: inline; font-size: 11px; }
+#rp-scheda .rp-punto-sub { display: flex; align-items: center; gap: 5px; margin-top: 5px; opacity: .95; }
+#rp-scheda .rp-punto-sub .legend-dot { border-color: rgba(255, 255, 255, .9); }
+.rp-punto-place { line-height: 1.3; }
+.rp-punto-row-label { flex: 0 0 42%; }
+.sc-avviso {
+  font-size: 11px; line-height: 1.5; padding: 7px 10px; margin-bottom: 6px; border-radius: 6px;
+  background: rgba(36, 88, 200, 0.07); border-left: 3px solid var(--c-brand-blue); color: #2a3a68;
+}
+.sc-avviso.warn { background: rgba(224, 120, 0, 0.1); border-left-color: #e07800; }
+.sc-link {
+  font: inherit; font-weight: 700; color: var(--c-brand-blue); background: none; border: none; padding: 0;
+  text-decoration: underline; cursor: pointer;
+}
+.rp-punto-row-value a { color: var(--c-brand-blue); }
+
+/* ── Statistiche / Info ── */
+#rp-stats-body h3, #rp-info h3 {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8898c8; margin: 16px 0 6px;
+}
+.stat-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 4px; }
+.srank-item.static { cursor: default; }
+.srank-item.static:hover { background: none; }
+.kb-list { display: grid; grid-template-columns: max-content 1fr; gap: 5px 12px; font-size: 12px; color: #3a4e78; }
+.kb-list dt {
+  font-weight: 700; color: #1a2a50; font-variant-numeric: tabular-nums;
+  background: rgba(36, 88, 200, 0.08); border-radius: 5px; padding: 1px 7px; text-align: center;
+}
+.kb-list dd { margin: 0; }
+
+/* Chip filtro: le etichette lunghe vanno a capo */
+.pf-chip-opt { white-space: normal; text-align: left; }
+
+/* Popup hover */
+.popup-hover { pointer-events: none; }
+.popup-hover .maplibregl-popup-content {
+  font-family: inherit; font-size: 12px; width: max-content; max-width: 300px; padding: 11px 13px;
+  border-radius: 14px; border: 1px solid rgba(30, 60, 160, 0.12); box-shadow: 0 6px 22px rgba(20, 40, 100, 0.22);
+}
+.popup-hover .maplibregl-popup-tip { display: none; }
+.ph-titolo { display: flex; align-items: center; gap: 7px; color: var(--c-brand-blue); font-size: 14px; }
+.ph-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(30, 60, 160, 0.25); }
+.ph-altri { font-size: 10px; font-weight: 700; background: rgba(255, 153, 0, 0.18); color: #a35c00; border-radius: 8px; padding: 0 6px; }
+.ph-desc { margin-top: 5px; color: #3a4e78; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.ph-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.ph-chip { font-size: 10.5px; font-weight: 700; padding: 2px 9px; border-radius: 10px; background: rgba(36, 88, 200, 0.08); color: var(--c-brand-blue); border: 1px solid rgba(36, 88, 200, 0.25); }
+.ph-chip.imp { background: rgba(255, 153, 0, 0.14); color: #a35c00; border-color: rgba(255, 153, 0, 0.45); }
+.ph-hint { margin-top: 7px; font-size: 10px; color: #8a96b4; }
+[data-theme="dark"] .popup-hover .maplibregl-popup-content { background: #1c2438; border-color: rgba(255, 255, 255, 0.12); }
+[data-theme="dark"] .ph-titolo { color: #9db4ff; }
+[data-theme="dark"] .ph-desc { color: #c4cde6; }
+[data-theme="dark"] .ph-chip { background: rgba(120, 150, 255, 0.14); color: #a9bcff; border-color: rgba(120, 150, 255, 0.35); }
+[data-theme="dark"] .ph-chip.imp { color: #ffc266; }
+[data-theme="dark"] .ph-dot { box-shadow: 0 0 0 2px #1c2438, 0 0 0 3px rgba(255, 255, 255, 0.3); }
+
+/* Controlli MapLibre sotto la toolbar a sinistra: restano fuori dal pannello */
+.maplibregl-ctrl-top-left { top: 10px; left: 62px; }
+
+@media (max-width: 640px) {
+  #right-panel { width: min(100vw - 20px, 400px); }
+  .maplibregl-ctrl-top-left { left: 54px; }
+}
+
+/* ── Badge e posizione nella scheda ── */
+.sc-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.sc-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .02em; padding: 2px 8px; border-radius: 10px;
+  background: rgba(255, 255, 255, 0.22); color: #fff; border: 1px solid rgba(255, 255, 255, 0.45);
+}
+.sc-badge.ok { background: #fff; color: #1b7a3d; border-color: #fff; }
+.sc-badge.warn { background: rgba(120, 30, 0, 0.35); border-color: rgba(255, 255, 255, 0.3); }
+.sc-pos + .sc-pos { border-top: 1px dashed rgba(30, 60, 160, 0.15); margin-top: 4px; padding-top: 4px; }
+
+/* ── Sezioni della scheda: carte ripiegabili con righe a zebra ── */
+#rp-punto-body { padding-bottom: 14px; }
+.sc-card {
+  margin: 10px 12px 0; padding: 10px 12px 12px;
+  border: 1px solid rgba(30, 60, 160, 0.16); border-radius: 12px; background: #fff;
+}
+.sc-card-head {
+  display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; user-select: none;
+  font-size: 13px; font-weight: 700; color: #1a2a50;
+}
+.sc-card-head::-webkit-details-marker { display: none; }
+.sc-card-head::before {
+  content: ''; flex: none; border: 4px solid transparent; border-top: 5px solid #b86e00; border-bottom: 0;
+  transition: transform .15s;
+}
+.sc-card:not([open]) > .sc-card-head::before { transform: rotate(-90deg); }
+.sc-card-icon { display: flex; flex: none; color: #b86e00; }
+.sc-card-title { flex: 1; min-width: 0; }
+.sc-card-badge {
+  flex: none; max-width: 55%; padding: 3px 10px; border-radius: 12px; background: #e8a21a; color: #1f1400;
+  font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sc-card-body { margin-top: 10px; }
+.sc-card-body .rp-punto-row { font-size: 12px; padding: 4px 8px; margin-bottom: 0; border-radius: 6px; }
+.sc-card-body .rp-punto-row:nth-child(even), .sc-pos .rp-punto-row:nth-child(even) { background: rgba(30, 60, 160, 0.07); }
+.sc-card-body .rp-punto-row-label { color: #5a6a98; }
+.sc-card-body .rp-punto-row-value { font-weight: 700; }
+.sc-card-body .sc-avviso:last-child { margin-bottom: 0; }
+[data-theme="dark"] .sc-card { background: rgba(18, 28, 58, 0.6); border-color: rgba(70, 110, 220, 0.25); }
+[data-theme="dark"] .sc-card-head { color: #dbe4ff; }
+[data-theme="dark"] .sc-card-body .rp-punto-row:nth-child(even), [data-theme="dark"] .sc-pos .rp-punto-row:nth-child(even) { background: rgba(120, 150, 255, 0.1); }
+.sc-badge.rup { background: rgba(36, 88, 200, 0.12); color: var(--c-brand-blue); border-color: rgba(36, 88, 200, 0.35); font-size: 11px; }
+
+/* Nota evidenziata (tab Info) */
+.panel-note.panel-callout {
+  margin-top: 12px; padding: 10px 12px;
+  background: #fff4d6; border: 1px solid #e0b43a; border-left: 4px solid #e0a000;
+  border-radius: 8px; color: #4a3500; font-size: 13px; font-weight: 500;
+}
+.panel-note.panel-callout a { color: inherit; font-weight: 700; }
+[data-theme="dark"] .panel-note.panel-callout { background: rgba(224, 160, 0, 0.16); border-color: rgba(224, 180, 58, 0.5); border-left-color: #e0a000; color: #ffe9b0; }

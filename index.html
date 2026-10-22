@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Piano triennale OO.PP. Palermo 2026-2028 — Mappa degli interventi</title>
+  <meta name="viewport" content="initial-scale=1,width=device-width">
+  <meta name="description" content="Mappa interattiva del Programma triennale dei lavori pubblici 2026-2028 del Comune di Palermo (DCC 553/2026): 548 interventi con filtri, schede e statistiche.">
+  <meta name="keywords" content="Open Data, Sicilia, Palermo, lavori pubblici, piano triennale, OO.PP., 2026-2028">
+  <meta name="author" content="Giovan Battista Vitrano per OpenDataSicilia.it">
+  <link rel="canonical" href="https://opendatasicilia.github.io/piano_triennale_26_28/">
+
+  <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Telegram) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:site_name" content="OpenDataSicilia">
+  <meta property="og:title" content="Piano triennale OO.PP. Palermo 2026-2028 — Mappa degli interventi">
+  <meta property="og:description" content="Mappa interattiva del Programma triennale dei lavori pubblici 2026-2028 del Comune di Palermo: 548 interventi con filtri, schede e statistiche.">
+  <meta property="og:url" content="https://opendatasicilia.github.io/piano_triennale_26_28/">
+  <meta property="og:image" content="https://opendatasicilia.github.io/piano_triennale_26_28/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Mappa degli interventi del piano triennale OO.PP. di Palermo 2026-2028">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Piano triennale OO.PP. Palermo 2026-2028 — Mappa degli interventi">
+  <meta name="twitter:description" content="Mappa interattiva del Programma triennale dei lavori pubblici 2026-2028 del Comune di Palermo: 548 interventi con filtri, schede e statistiche.">
+  <meta name="twitter:image" content="https://opendatasicilia.github.io/piano_triennale_26_28/img/og-image.png">
+  <meta name="twitter:image:alt" content="Mappa degli interventi del piano triennale OO.PP. di Palermo 2026-2028">
+
+  <!-- Google Analytics (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KHR1GHDRQS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KHR1GHDRQS');
+  </script>
+  <link rel="stylesheet" href="css/maplibre-gl.css">
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&display=swap">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/filters.css">
+</head>
+<body>
+
+<div id="map" role="application" aria-label="Mappa degli interventi del piano triennale"></div>
+
+<!-- ═══ TOOLBAR ═══ -->
+<div id="map-toolbar-wrap">
+<div id="map-toolbar" role="toolbar" aria-label="Strumenti mappa">
+
+  <button class="tb-btn" id="tb-home" title="Vista iniziale">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3L2 12h3v8h5v-5h4v5h5v-8h3L12 3z"/></svg>
+    <span class="tb-lbl">Home</span>
+  </button>
+
+  <div class="tb-sep"></div>
+
+  <div class="tb-group" id="tb-basemaps" role="group" aria-label="Cartografia di base">
+    <button class="tb-btn tb-radio active" data-basemap="chiara" aria-pressed="true" title="Mappa chiara">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span class="tb-lbl">Chiara</span>
+    </button>
+    <button class="tb-btn tb-radio" data-basemap="scura" aria-pressed="false" title="Mappa scura">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 1 0 20.354 15.354z"/></svg>
+      <span class="tb-lbl">Scura</span>
+    </button>
+    <button class="tb-btn tb-radio" data-basemap="satellite" aria-pressed="false" title="Immagini satellitari">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2" fill="currentColor" stroke="none"/><path d="M4 4a16 16 0 0 1 16 16"/><path d="M4 11a9 9 0 0 1 9 9"/></svg>
+      <span class="tb-lbl">SAT</span>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <button class="tb-btn" id="tb-fullscreen" title="Schermo intero">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3 3h6v2H5v4H3V3zm12 0h6v6h-2V5h-4V3zM3 15h2v4h4v2H3v-6zm16 4h-4v2h6v-6h-2v4z"/></svg>
+    <span class="tb-lbl">Full</span>
+  </button>
+
+  <div class="tb-sep"></div>
+
+  <button class="tb-btn" id="tb-info" title="Info, fonti e scorciatoie da tastiera">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none"/></svg>
+    <span class="tb-lbl">Info</span>
+  </button>
+
+</div>
+</div>
+
+<!-- Navigazione mobile -->
+<nav id="mobile-nav" aria-label="Sezioni">
+  <button type="button" class="mn-btn active" data-go="map"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg><span class="mn-lbl">Mappa</span></button>
+  <button type="button" class="mn-btn" data-go="elenco"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span class="mn-lbl">Elenco</span></button>
+  <button type="button" class="mn-btn" data-go="filtri"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="mn-badge" id="mn-badge" style="display:none"></span><span class="mn-lbl">Filtri</span></button>
+  <button type="button" class="mn-btn" data-go="stats"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="mn-lbl">Statistiche</span></button>
+  <button type="button" class="mn-btn" data-go="info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none"/></svg><span class="mn-lbl">Info</span></button>
+</nav>
+
+<!-- Apertura pannello su mobile -->
+<button id="rp-mobile-btn" aria-label="Apri il pannello degli interventi" aria-controls="right-panel">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+  Interventi
+</button>
+
+<!-- ═══ LEGENDA ═══ -->
+<div id="map-legends">
+  <div class="map-legend visible" id="legend-annualita">
+    <div class="map-legend-title" id="legend-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="legend-rows"><span class="legend-toggle-arrow">▾</span><span>Annualità <span class="map-legend-hint">(clic per filtrare)</span></span></div>
+    <div class="legend-rows" id="legend-rows"></div>
+  </div>
+</div>
+
+<!-- ═══ RICERCA & FILTRI ═══ -->
+<div id="pf-bar">
+  <div id="pf-chips"></div>
+  <div id="pf-searchbar">
+    <span class="pf-si">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    </span>
+    <input type="text" id="pf-search-input" placeholder="Cerca per codice, descrizione, RUP, CUP…  ( / )" title="Cerca interventi (scorciatoia: /)" aria-label="Cerca interventi" autocomplete="off">
+    <button id="pf-search-clear" style="display:none" title="Cancella ricerca" aria-label="Cancella ricerca">&#x2715;</button>
+    <div class="pf-sep"></div>
+    <button id="pf-filter-btn" title="Filtri (scorciatoia: F)" aria-label="Apri i filtri">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+    </button>
+    <div id="pf-search-dd" role="listbox" aria-label="Suggerimenti"></div>
+  </div>
+</div>
+
+<!-- ═══ PANNELLO DESTRA ═══ -->
+<div id="rp-wrap">
+  <button id="rp-toggle" title="Apri/chiudi pannello (scorciatoia: P)" aria-label="Apri/chiudi pannello" aria-expanded="true" aria-controls="right-panel">
+    <svg id="rp-toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+
+  <div id="right-panel">
+    <button id="rp-mobile-close" title="Chiudi pannello" aria-label="Chiudi pannello">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div id="rp-nav" role="tablist" aria-label="Sezioni del pannello" aria-orientation="horizontal">
+      <button class="rp-tab active" role="tab" id="tab-elenco" data-view="elenco" aria-selected="true" aria-controls="rp-elenco" title="Elenco interventi (1)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Elenco
+      </button>
+      <button class="rp-tab" role="tab" id="tab-scheda" data-view="scheda" aria-selected="false" tabindex="-1" aria-controls="rp-scheda" title="Scheda intervento (2)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Scheda
+      </button>
+      <button class="rp-tab" role="tab" id="tab-stats" data-view="stats" aria-selected="false" tabindex="-1" aria-controls="rp-stats" title="Statistiche (3)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Statistiche
+      </button>
+      <button class="rp-tab" role="tab" id="tab-filtri" data-view="filtri" aria-selected="false" tabindex="-1" aria-controls="rp-filtri" title="Filtri (4 o F)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+        Filtri
+        <span id="pf-filter-badge" style="display:none"></span>
+      </button>
+      <button class="rp-tab" role="tab" id="tab-info" data-view="info" aria-selected="false" tabindex="-1" aria-controls="rp-info" title="Info e scorciatoie (5)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none"/></svg>
+        Info
+      </button>
+    </div>
+
+    <!-- Elenco -->
+    <div id="rp-elenco" class="rp-view" role="tabpanel" aria-labelledby="tab-elenco">
+      <div class="rp-panel-header">
+        <div class="rp-panel-title">Interventi</div>
+        <div class="rp-panel-sub" id="el-conto" aria-live="polite">–</div>
+      </div>
+      <div class="el-toolbar">
+        <label for="el-ordina">Ordina per</label>
+        <select id="el-ordina">
+          <option value="importo">Importo ↓</option>
+          <option value="codice">Codice</option>
+          <option value="anno">Anno di avvio</option>
+        </select>
+        <span class="el-hint">↑ ↓ scorrono · Invio apre</span>
+      </div>
+      <div id="el-lista" class="rp-scroll" role="listbox" aria-label="Elenco interventi"></div>
+    </div>
+
+    <!-- Scheda -->
+    <div id="rp-scheda" class="rp-view" role="tabpanel" aria-labelledby="tab-scheda" hidden>
+      <div class="rp-detail-topbar">
+        <button id="rp-punto-back" title="Torna all’elenco (Esc)" aria-label="Torna all’elenco">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Elenco
+        </button>
+        <div class="rp-detail-name-wrap"><span id="rp-punto-title">Nessun intervento selezionato</span></div>
+      </div>
+      <div id="rp-punto-nav" class="rp-punto-nav" hidden>
+        <button id="rp-punto-prev" title="Intervento precedente ( [ )" aria-label="Intervento precedente">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span id="rp-punto-nav-count" class="rp-punto-nav-count" aria-live="polite"></span>
+        <button id="rp-punto-next" title="Intervento successivo ( ] )" aria-label="Intervento successivo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div id="rp-punto-body"></div>
+    </div>
+
+    <!-- Statistiche -->
+    <div id="rp-stats" class="rp-view" role="tabpanel" aria-labelledby="tab-stats" hidden>
+      <div class="rp-panel-header">
+        <div class="rp-panel-title">Statistiche e classifiche</div>
+        <div class="rp-panel-sub">Sul sottoinsieme filtrato</div>
+      </div>
+      <div id="rp-stats-body" class="panel-section rp-scroll"></div>
+    </div>
+
+    <!-- Filtri -->
+    <div id="rp-filtri" class="rp-view" role="tabpanel" aria-labelledby="tab-filtri" hidden>
+      <div class="rp-panel-header">
+        <div class="rp-panel-title">Filtri</div>
+        <div class="rp-panel-sub">Interconnessi: ogni scelta restringe le opzioni delle altre</div>
+      </div>
+      <div id="rp-filtri-body" class="panel-section rp-scroll">
+        <div class="pfm-section">Dove</div>
+        <div class="pfm-group pfm-geo">
+          <div class="pfm-field"><label for="pf-circ-input">Circoscrizione</label><div class="pf-combo"><input type="text" id="pf-circ-input" class="pf-combo-input" placeholder="Tutte · scrivi una lettera…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="pf-circ-list"><div class="pf-combo-list" id="pf-circ-list" role="listbox"></div></div></div>
+          <div class="pfm-field"><label for="pf-quart-input">Quartiere</label><div class="pf-combo"><input type="text" id="pf-quart-input" class="pf-combo-input" placeholder="Tutti · scrivi per cercare…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="pf-quart-list"><div class="pf-combo-list" id="pf-quart-list" role="listbox"></div></div></div>
+          <div class="pfm-field"><label for="pf-upl-input">UPL · Unità di Primo Livello</label><div class="pf-combo"><input type="text" id="pf-upl-input" class="pf-combo-input" placeholder="Tutte · scrivi per cercare…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="pf-upl-list"><div class="pf-combo-list" id="pf-upl-list" role="listbox"></div></div></div>
+        </div>
+        <div class="pfm-section">Che cosa</div>
+        <details class="pfm-group pfm-acc" data-dim="anno" open><summary><span id="lb-anno">Annualità (avvio affidamento)</span><span class="pfm-sel" id="pf-sel-anno"></span></summary><div class="pfm-chipset" id="pf-set-anno" role="group" aria-labelledby="lb-anno"></div></details>
+        <details class="pfm-group pfm-acc" data-dim="settore" open><summary><span id="lb-settore">Settore</span><span class="pfm-sel" id="pf-sel-settore"></span></summary><div class="pfm-chipset" id="pf-set-settore" role="group" aria-labelledby="lb-settore"></div></details>
+        <details class="pfm-group pfm-acc" data-dim="tipologia"><summary><span id="lb-tipologia">Tipologia</span><span class="pfm-sel" id="pf-sel-tipologia"></span></summary><div class="pfm-chipset" id="pf-set-tipologia" role="group" aria-labelledby="lb-tipologia"></div></details>
+        <div class="pfm-section">Quanto e come</div>
+        <details class="pfm-group pfm-acc" data-dim="priorita"><summary><span id="lb-priorita">Priorità</span><span class="pfm-sel" id="pf-sel-priorita"></span></summary><div class="pfm-chipset" id="pf-set-priorita" role="group" aria-labelledby="lb-priorita"></div></details>
+        <details class="pfm-group pfm-acc" data-dim="fascia"><summary><span id="lb-fascia">Importo (triennio)</span><span class="pfm-sel" id="pf-sel-fascia"></span></summary><div class="pfm-chipset" id="pf-set-fascia" role="group" aria-labelledby="lb-fascia"></div></details>
+        <details class="pfm-group pfm-acc" data-dim="cup"><summary><span id="lb-cup">CUP</span><span class="pfm-sel" id="pf-sel-cup"></span></summary><div class="pfm-chipset" id="pf-set-cup" role="group" aria-labelledby="lb-cup"></div></details>
+        <div class="pfm-section">Chi</div>
+        <details class="pfm-group pfm-acc" data-dim="rup"><summary><span id="lb-rup">RUP · Responsabile unico del progetto</span><span class="pfm-sel" id="pf-sel-rup"></span></summary><div class="pf-combo" id="pf-set-rup"><input type="text" id="pf-rup-input" class="pf-combo-input" placeholder="Tutti · scrivi per cercare…" aria-labelledby="lb-rup" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="pf-rup-list"><div class="pf-combo-list" id="pf-rup-list" role="listbox" aria-multiselectable="true"></div></div></details>
+        <details class="pfm-group pfm-acc" data-dim="fonte"><summary><span id="lb-fonte">Fonte di finanziamento</span><span class="pfm-sel" id="pf-sel-fonte"></span></summary><div class="pfm-chipset" id="pf-set-fonte" role="group" aria-labelledby="lb-fonte"></div></details>
+
+        <div id="pf-result-count" class="pfm-result" aria-live="polite">–</div>
+        <div class="pfm-footer">
+          <button id="pf-zoom" disabled title="Zoom sui risultati filtrati">↗ Zoom sui risultati</button>
+          <button id="pf-reset" title="Ripristina filtri">Ripristina filtri</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div id="rp-info" class="rp-view" role="tabpanel" aria-labelledby="tab-info" hidden>
+      <div class="rp-panel-header">
+        <div class="rp-panel-title">Piano triennale OO.PP. 2026-2028</div>
+        <div class="rp-panel-sub">Comune di Palermo · DCC 553/2026</div>
+      </div>
+      <div class="panel-section rp-scroll">
+        <p class="panel-note">Il <strong>Programma triennale dei lavori pubblici 2026-2028</strong> del Comune di Palermo raccoglie <strong>548 interventi</strong> per <strong>4,37 miliardi di euro</strong>, programmati su tre annualità. La mappa colloca gli interventi sul territorio e permette di filtrarli per zona, settore, importo e stato dei codici CUP.</p>
+        <h3>Scorciatoie da tastiera</h3>
+        <dl class="kb-list">
+          <dt>← →</dt><dd>cambia scheda (con il focus sulle schede)</dd>
+          <dt>1 – 5</dt><dd>vai a Elenco, Scheda, Statistiche, Filtri, Info</dd>
+          <dt>F</dt><dd>apri i filtri</dd>
+          <dt>/</dt><dd>cerca</dd>
+          <dt>↑ ↓</dt><dd>scorri l’elenco · Invio apre la scheda</dd>
+          <dt>[ ]</dt><dd>intervento precedente / successivo</dd>
+          <dt>Esc</dt><dd>torna all’elenco</dd>
+          <dt>P</dt><dd>apri/chiudi il pannello</dd>
+        </dl>
+        <h3>Come leggere la mappa</h3>
+        <p class="panel-note">I colori indicano l’annualità (rosso I, arancio II, giallo III). Un intervento può avere più geometrie (punti, linee, poligoni): selezionandolo si evidenziano tutte. Le geometrie con precisione bassa, ricavate da un toponimo, sono grigie e valgono circa 300 m.</p>
+        <p class="panel-note">94 interventi su 548 non hanno una geometria: restano in elenco e statistiche, segnati <em>non localizzato</em>. In legenda si possono mostrare anche le geometrie non attribuibili a un intervento.</p>
+        <h3>Fonti</h3>
+        <p class="panel-note">Delibera di Consiglio Comunale n. 553/2026, schede e allegati del Programma triennale. Tabelle estratte dai PDF e confrontate con i fogli di calcolo del Comune. Il CUP ufficiale non è stato modificato: i CUP candidati sono proposte da verificare.</p>
+        <p class="panel-note">Fonte dati: <a href="https://demopalermo.patisweb.it/page/113/details/18/piano-triennale-oopp-anno-2026-2028.html" target="_blank" rel="noopener noreferrer">Piano triennale OOPP anno 2026-2028</a>, portale Demo Palermo (Comune di Palermo).</p>
+        <p class="panel-note panel-callout"><strong>Nota:</strong> rielaborazione di <a href="https://opendatasicilia.it/" target="_blank" rel="noopener noreferrer">OpenDataSicilia</a>. I dati sono ricavati da Claude AI dai PDF pubblicati dal Comune e hanno carattere informativo, senza valore legale: per i dati ufficiali fa fede la documentazione originale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scala metrica -->
+<div id="map-scale"><div id="map-scale-bar"></div><span id="map-scale-label"></span></div>
+
+<!-- Slider zoom -->
+<div id="zoom-slider" role="group" aria-label="Zoom mappa">
+  <output id="zoom-val" for="zoom-range">12</output>
+  <input id="zoom-range" type="range" min="10" max="20" step="0.05" value="12" orient="vertical" aria-label="Livello di zoom">
+</div>
+
+<!-- Logo OpenDataSicilia -->
+<a id="ods-logo" href="https://opendatasicilia.it/" target="_blank" rel="noopener noreferrer" title="OpenDataSicilia — comunità aperta che promuove la cultura degli open data in Sicilia">
+  <img src="img/opendatasicilia.png" alt="OpenDataSicilia">
+</a>
+
+<!-- Attribuzioni -->
+<div id="attrib-wrap">
+  <button id="attrib-btn" title="Attribuzioni" aria-label="Attribuzioni" aria-expanded="false" aria-controls="attrib-panel"></button>
+  <div id="attrib-panel" hidden><span id="attrib-text"></span></div>
+</div>
+
+<script src="js/vendor/maplibre-gl.js"></script>
+<script src="js/vendor/pmtiles.js"></script>
+<script src="js/data.js"></script>
+<script src="js/style.js"></script>
+<script src="js/map.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/panel.js"></script>
+</body>
+</html>
