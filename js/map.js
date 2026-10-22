@@ -196,6 +196,11 @@ function vistaIniziale(animata = true) {
   const cam = map.cameraForBounds(BOUNDS, { padding: paddingMappa(30) });
   map.easeTo({ center: cam.center, zoom: Math.max(cam.zoom, ZOOM_MIN_DATI), duration: animata ? durata(800) : 0 });
 }
+// Linguetta (solo mobile): apre e chiude la toolbar, di default chiusa
+document.getElementById('tb-handle').addEventListener('click', (e) => {
+  const aperta = document.getElementById('map-toolbar-wrap').classList.toggle('aperta');
+  e.currentTarget.setAttribute('aria-expanded', String(aperta));
+});
 document.getElementById('tb-home').addEventListener('click', () => vistaIniziale());
 map.once('style.load', () => { if (map.getZoom() < ZOOM_MIN_DATI) vistaIniziale(false); });
 document.getElementById('tb-fullscreen').addEventListener('click', () => {
