@@ -46,7 +46,7 @@ const map = new maplibregl.Map({
   bounds: BOUNDS,
   fitBoundsOptions: { padding: { top: 30, bottom: 30, left: 70, right: innerWidth >= 640 ? LARGHEZZA_PANNELLO + 30 : 30 } },
   maxBounds: [[13.1, 37.95], [13.6, 38.35]],
-  minZoom: 10,
+  minZoom: ZOOM_MIN_DATI,
   maxZoom: 20,
   attributionControl: false,
   hash: 'mappa', // posizione nell'URL come #mappa=zoom/lat/lng, accanto ai parametri di filtri e selezione

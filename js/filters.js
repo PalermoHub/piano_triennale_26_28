@@ -127,7 +127,7 @@ let ultimiRisultati = [];
 const LIMITE_CHIP = 8; // opzioni mostrate per gruppo prima di «+ altre»
 const espansi = new Set(); // gruppi con un filtro attivo di cui si mostrano anche le altre opzioni
 
-function aggiorna({ salvaUrl = true } = {}) {
+function aggiorna({ salvaUrl = true, zoom = salvaUrl } = {}) {
   normalizza();
   ultimiRisultati = risultati();
   renderFiltri();
@@ -135,6 +135,7 @@ function aggiorna({ salvaUrl = true } = {}) {
   renderLegenda();
   renderCopertura();
   aggiornaMappaDaFiltri(ultimiRisultati);
+  if (zoom && numAttivi() > 0) zoomSuRisultati(); // con un filtro attivo la mappa inquadra tutti i risultati
   if (salvaUrl) scriviUrl();
   document.dispatchEvent(new CustomEvent('filtri-cambiati', { detail: { risultati: ultimiRisultati, attivi: numAttivi() } }));
 }
