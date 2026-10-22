@@ -1443,7 +1443,10 @@ body:has(#rp-wrap.open) #attrib-wrap {
     border-radius: 9px; background: #1a1a1a; color: #fff; font-size: 11px; font-weight: 700; line-height: 17px; text-align: center;
   }
 
-  #rp-mobile-btn, #rp-mobile-close, #rp-nav { display: none !important; }
+  #rp-mobile-btn, #rp-nav { display: none !important; }
+  /* X di chiusura sempre visibile nei pannelli: non tutti capiscono che serve «Mappa» nella barra in basso */
+  #rp-mobile-close { width: 36px; height: 36px; top: 8px; right: 8px; }
+  .rp-panel-header, .rp-detail-topbar { padding-right: 52px; }
   #rp-wrap { bottom: var(--nav-h) !important; }
   #right-panel { height: calc(100dvh - var(--nav-h)) !important; }
   #pf-bar { bottom: calc(var(--nav-h) + 8px) !important; }
