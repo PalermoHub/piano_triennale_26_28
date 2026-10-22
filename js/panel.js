@@ -423,7 +423,7 @@ async function avvia() {
   await caricaDati();
   leggiUrl();
   initFiltriUI();
-  const prontoMappa = map.loaded() && map.getLayer('punti') ? Promise.resolve() : new Promise((r) => map.once('interventi-pronti', r));
+  const prontoMappa = map.getLayer('punti') ? Promise.resolve() : new Promise((r) => map.once('interventi-pronti', r));
   await prontoMappa;
   aggiornaScheda();
   aggiorna({ salvaUrl: false });

@@ -75,7 +75,8 @@ function applicaFiltriMappa() {
   for (const id of LAYER_GEOMETRIE) if (map.getLayer(id)) map.setFilter(id, filtro);
 }
 
-map.on('load', () => {
+// 'style.load' e non 'load': 'load' attende anche i tile della basemap e, se Mapbox risponde 403, può non scattare
+map.once('style.load', () => {
   for (const l of layerInterventi()) map.addLayer(l);
   map.addLayer({ id: 'sel-poligoni', type: 'line', source: SOURCE_ID, 'source-layer': 'poligoni', filter: FILTRO_NESSUNO, paint: { 'line-color': '#2458c8', 'line-width': 3 } });
   map.addLayer({ id: 'sel-linee', type: 'line', source: SOURCE_ID, 'source-layer': 'linee', filter: FILTRO_NESSUNO, paint: { 'line-color': '#2458c8', 'line-width': ['interpolate', ['linear'], ['zoom'], 11, 4, 17, 9], 'line-opacity': 0.55 } });
@@ -183,7 +184,7 @@ function vistaIniziale(animata = true) {
   map.easeTo({ center: cam.center, zoom: Math.max(cam.zoom, ZOOM_MIN_DATI), duration: animata ? 800 : 0 });
 }
 document.getElementById('tb-home').addEventListener('click', () => vistaIniziale());
-map.once('load', () => { if (map.getZoom() < ZOOM_MIN_DATI) vistaIniziale(false); });
+map.once('style.load', () => { if (map.getZoom() < ZOOM_MIN_DATI) vistaIniziale(false); });
 document.getElementById('tb-fullscreen').addEventListener('click', () => {
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen?.();
